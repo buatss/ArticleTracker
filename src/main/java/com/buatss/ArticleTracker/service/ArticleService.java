@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 
 @Service
@@ -20,13 +21,14 @@ public class ArticleService {
     List<AbstractArticleFinder> parsers;
 
     public void scrapAll() {
-        parsers.forEach(parser -> {
-            parser.findArticles();
-            parser.getArticles()
-                    .stream()
-                    .filter(article -> repository.findByLink(article.getLink()) == null)
-                    .filter(article -> article.getLink().length() < 255)
-                    .forEach(article -> repository.saveAndFlush(article));
-        });
+        parsers
+                .parallelStream()
+                .flatMap(finder -> {
+                    finder.findArticles();
+                    return finder.getArticles().stream();
+                })
+                .filter(article -> repository.findByLink(article.getLink()) == null)
+                .filter(article -> article.getLink().length() < 255)
+                .forEach(article -> repository.saveAndFlush(article));
     }
 }
