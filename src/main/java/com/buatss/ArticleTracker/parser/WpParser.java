@@ -1,6 +1,8 @@
 package com.buatss.ArticleTracker.parser;
 
 import com.buatss.ArticleTracker.model.Article;
+import com.buatss.ArticleTracker.model.MediaSite;
+import com.buatss.ArticleTracker.util.MediaSiteType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -8,23 +10,23 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URL;
+import java.util.function.Predicate;
 
 @Component
 public class WpParser extends AbstractArticleFinder {
-    private final URL url;
+    private final MediaSite mediaSite;
 
-    public WpParser() throws IOException {
-        this.url = new URL("http://www.wp.pl");
+    public WpParser() {
+        this.mediaSite = MediaSiteType.WP.getMediaSite();
     }
 
     @Override
     public void findArticles() {
-        Document doc = null;
+        Document doc;
         try {
-            doc = Jsoup.connect(String.valueOf(this.url)).get();
+            doc = Jsoup.connect(String.valueOf(this.mediaSite.getLink())).get();
         } catch (IOException e) {
-            throw new RuntimeException("Cannot connect to " + this.url);
+            throw new RuntimeException("Cannot connect to " + this.mediaSite.getLink());
         }
 
         findArticlesInHyperlink(doc);
@@ -34,26 +36,40 @@ public class WpParser extends AbstractArticleFinder {
     private void findArticlesInHyperlink(Document doc) {
         Elements elements = doc.select("a");
         elements.stream()
-                .filter(element -> element.hasAttr("href"))
-                .filter(element -> element.hasAttr("title"))
-                .map(element -> new Article(null, element.attr("title"), element.attr("href"), null))
-                .forEach(x -> {
-                    this.getArticles().add(x);
-                });
+                .filter(hasLinkToArticleWithTitle())
+                .map(this::createArticleFromHyperlink)
+                .forEach(x -> this.getArticles().add(x));
     }
 
     private void findArticlesNestedInHyperlink(Document doc) {
         Elements elements = doc.select("a");
         elements.stream()
-                .filter(element -> element.hasAttr("href") && element.attr("href").contains("wp.pl"))
-                .filter(element -> element.select("div").stream().anyMatch(Element::hasText))
-                .map(element -> new Article(null,
-                        element.select("div").stream().filter(Element::hasText).map(Element::text).findFirst().get(),
-                        element.attr("href"),
-                        null))
-                .forEach(x -> {
-                    this.getArticles().add(x);
-                });
+                .filter(hasLinkToArticle())
+                .filter(hasTextInDiv())
+                .map(this::createArticleFromElementNested)
+                .forEach(this.getArticles()::add);
+    }
+
+    private Predicate<Element> hasLinkToArticleWithTitle() {
+        return element -> element.hasAttr("href") && element.hasAttr("title") && !element.attr("title").isEmpty();
+    }
+
+    private Predicate<Element> hasLinkToArticle() {
+        return element -> element.hasAttr("href") && element.attr("href").contains("wp.pl");
+    }
+
+    private Predicate<Element> hasTextInDiv() {
+        return element -> element.select("div").stream().anyMatch(Element::hasText);
+    }
+
+    private Article createArticleFromHyperlink(Element element) {
+        return new Article(null, element.attr("title"), element.attr("href"), null, this.mediaSite);
+    }
+
+    private Article createArticleFromElementNested(Element element) {
+        String title = element.select("div").stream().filter(Element::hasText).map(Element::text).findFirst().get();
+        String url = element.attr("href");
+        return new Article(null, title, url, null, this.mediaSite);
     }
 }
 
