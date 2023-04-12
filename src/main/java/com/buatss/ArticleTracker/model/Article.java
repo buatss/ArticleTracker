@@ -20,8 +20,12 @@ public class Article {
     @Column(nullable = false, unique = true)
     private String link;
     private LocalDateTime uploadDate;
+    @ManyToOne
+    @JoinColumn(name = "media_site_id", referencedColumnName = "id")
+    private MediaSite mediaSite;
+
     @PrePersist
-    public void prePersist(){
+    public void prePersist() {
         uploadDate = LocalDateTime.now();
     }
 }

@@ -4,6 +4,7 @@
 ## Run project steps
 - download and install *JDK 17*
 - _(optional)_ download and install *Apache Maven 3.9.1*
+- download and install geckondriver with mozilla firefox and create enviromental variable **geckodriver** and set value to path to **geckodriver.exe** 
 - set up your local MySQL database according to _src/main/resources/application.properties_
 - execute command - `./mvnw spring-boot:run` from repository root
 
