@@ -29,4 +29,12 @@ public class WebScraperUtils {
             throw new RuntimeException(e);
         }
     }
+
+    public static void waitMs(Long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

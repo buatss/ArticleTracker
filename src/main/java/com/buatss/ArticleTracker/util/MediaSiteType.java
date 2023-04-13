@@ -10,7 +10,8 @@ import java.util.List;
 public enum MediaSiteType {
     WP(new MediaSite(1, "Wirtualna Polska", "https://www.wp.pl/")),
     ONET(new MediaSite(2, "Onet", "https://www.onet.pl/")),
-    MONEY(new MediaSite(3, "Money", "https://www.money.pl/"));
+    MONEY(new MediaSite(3, "Money", "https://www.money.pl/")),
+    WYBORCZA(new MediaSite(4, "Wyborcza", "https://wyborcza.pl/"));
 
     private final MediaSite mediaSite;
 
