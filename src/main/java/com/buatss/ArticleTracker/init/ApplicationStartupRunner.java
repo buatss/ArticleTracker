@@ -1,6 +1,5 @@
 package com.buatss.ArticleTracker.init;
 
-import com.buatss.ArticleTracker.db.ArticleRepository;
 import com.buatss.ArticleTracker.db.MediaSiteRepository;
 import com.buatss.ArticleTracker.service.ArticleService;
 import com.buatss.ArticleTracker.util.MediaSiteType;
@@ -19,9 +18,6 @@ public class ApplicationStartupRunner implements ApplicationRunner {
 
     @Value("${scrap.on.startup}")
     private Boolean scrapOnStartup;
-
-    @Autowired
-    ArticleRepository repositarticleRepository;
     @Autowired
     MediaSiteRepository mediaSiteRepository;
     @Autowired
