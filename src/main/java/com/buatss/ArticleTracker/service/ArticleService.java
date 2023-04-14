@@ -21,7 +21,7 @@ public class ArticleService {
 
     public void scrapAll() {
         parsers
-                .parallelStream()
+                .stream()
                 .flatMap(finder -> {
                     finder.findArticles();
                     return finder.getArticles().stream();
@@ -29,5 +29,7 @@ public class ArticleService {
                 .filter(article -> repository.findByLink(article.getLink()) == null)
                 .filter(article -> article.getLink().length() < 255)
                 .forEach(article -> repository.saveAndFlush(article));
+
+        parsers.get(0).getDriver().quit();
     }
 }
