@@ -14,11 +14,7 @@ import java.util.function.Predicate;
 
 @Component
 public class WpParser extends AbstractArticleFinder {
-    private final MediaSite mediaSite;
-
-    public WpParser() {
-        this.mediaSite = MediaSiteType.WP.getMediaSite();
-    }
+    private final MediaSite mediaSite = MediaSiteType.WP.getMediaSite();
 
     @Override
     public void findArticles() {

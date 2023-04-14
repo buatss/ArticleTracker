@@ -10,7 +10,6 @@ import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
@@ -22,13 +21,14 @@ import static com.buatss.ArticleTracker.util.WebScraperUtils.*;
 @Component
 public class WyborczaParser extends AbstractArticleFinder {
     private final MediaSite mediaSite = MediaSiteType.WYBORCZA.getMediaSite();
+    private final WebDriver driver;
+
+    public WyborczaParser(WebDriver driver) {
+        this.driver = driver;
+    }
 
     @Override
     public void findArticles() {
-        System.setProperty("webdriver.gecko.driver", System.getenv("geckodriver"));
-
-        WebDriver driver = new FirefoxDriver();
-
         driver.get(this.mediaSite.getLink());
 
         acceptCookies(driver);
@@ -42,8 +42,6 @@ public class WyborczaParser extends AbstractArticleFinder {
                 .filter(hasArticleLinkWithText())
                 .map(createArticle())
                 .forEach(this.getArticles()::add);
-
-        driver.quit();
     }
 
     private Predicate<Element> hasArticleLinkWithText() {

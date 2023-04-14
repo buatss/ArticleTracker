@@ -11,7 +11,6 @@ import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
@@ -23,12 +22,15 @@ import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
 @Component
 public class MoneyParser extends AbstractArticleFinder {
     private final MediaSite mediaSite = MediaSiteType.MONEY.getMediaSite();
+    private final WebDriver driver;
+
+    public MoneyParser(WebDriver driver) {
+        this.driver = driver;
+    }
 
     @Override
     public void findArticles() {
         System.setProperty("webdriver.gecko.driver", System.getenv("geckodriver"));
-
-        WebDriver driver = new FirefoxDriver();
 
         driver.get(this.mediaSite.getLink());
 
@@ -42,8 +44,6 @@ public class MoneyParser extends AbstractArticleFinder {
                 .filter(hasArticle())
                 .map(createArticle())
                 .forEach(this.getArticles()::add);
-
-        driver.quit();
     }
 
     private void acceptCookies(WebDriver driver) {
