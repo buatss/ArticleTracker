@@ -1,7 +1,6 @@
 package com.buatss.ArticleTracker.parser;
 
 import com.buatss.ArticleTracker.model.Article;
-import com.buatss.ArticleTracker.model.MediaSite;
 import com.buatss.ArticleTracker.util.MediaSiteType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,11 +19,8 @@ import static com.buatss.ArticleTracker.util.WebScraperUtils.*;
 
 @Component
 public class WyborczaParser extends AbstractArticleFinder {
-    private final MediaSite mediaSite = MediaSiteType.WYBORCZA.getMediaSite();
-    private final WebDriver driver;
-
-    public WyborczaParser(WebDriver driver) {
-        this.driver = driver;
+    protected WyborczaParser() {
+        super(MediaSiteType.WYBORCZA.getMediaSite());
     }
 
     @Override
