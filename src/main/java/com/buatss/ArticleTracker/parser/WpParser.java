@@ -1,7 +1,6 @@
 package com.buatss.ArticleTracker.parser;
 
 import com.buatss.ArticleTracker.model.Article;
-import com.buatss.ArticleTracker.model.MediaSite;
 import com.buatss.ArticleTracker.util.MediaSiteType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,7 +13,9 @@ import java.util.function.Predicate;
 
 @Component
 public class WpParser extends AbstractArticleFinder {
-    private final MediaSite mediaSite = MediaSiteType.WP.getMediaSite();
+    protected WpParser() {
+        super(MediaSiteType.WP.getMediaSite());
+    }
 
     @Override
     public void findArticles() {

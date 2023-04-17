@@ -1,7 +1,6 @@
 package com.buatss.ArticleTracker.parser;
 
 import com.buatss.ArticleTracker.model.Article;
-import com.buatss.ArticleTracker.model.MediaSite;
 import com.buatss.ArticleTracker.util.MediaSiteType;
 import com.buatss.ArticleTracker.util.WebScraperUtils;
 import org.jsoup.Jsoup;
@@ -21,11 +20,8 @@ import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
 
 @Component
 public class MoneyParser extends AbstractArticleFinder {
-    private final MediaSite mediaSite = MediaSiteType.MONEY.getMediaSite();
-    private final WebDriver driver;
-
-    public MoneyParser(WebDriver driver) {
-        this.driver = driver;
+    public MoneyParser() {
+        super(MediaSiteType.MONEY.getMediaSite());
     }
 
     @Override

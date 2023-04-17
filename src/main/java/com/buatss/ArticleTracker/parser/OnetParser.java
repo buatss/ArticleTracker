@@ -1,7 +1,6 @@
 package com.buatss.ArticleTracker.parser;
 
 import com.buatss.ArticleTracker.model.Article;
-import com.buatss.ArticleTracker.model.MediaSite;
 import com.buatss.ArticleTracker.util.MediaSiteType;
 import com.buatss.ArticleTracker.util.WebScraperUtils;
 import org.jsoup.Jsoup;
@@ -21,11 +20,8 @@ import static com.buatss.ArticleTracker.util.WebScraperUtils.waitRandomMilis;
 
 @Component
 public class OnetParser extends AbstractArticleFinder {
-    private final MediaSite mediaSite = MediaSiteType.ONET.getMediaSite();
-    private final WebDriver driver;
-
-    public OnetParser(WebDriver driver) {
-        this.driver = driver;
+    protected OnetParser() {
+        super(MediaSiteType.ONET.getMediaSite());
     }
 
     @Override
