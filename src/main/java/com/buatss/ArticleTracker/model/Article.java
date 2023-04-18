@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(uniqueConstraints = @UniqueConstraint(columnNames={"title", "media_site_id"}))
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
