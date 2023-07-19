@@ -5,11 +5,13 @@ import com.buatss.ArticleTracker.model.MediaSite;
 import lombok.Getter;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Component
 public abstract class AbstractArticleFinder {
     @Autowired
     protected WebDriver driver;

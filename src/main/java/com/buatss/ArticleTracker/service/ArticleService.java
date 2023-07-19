@@ -28,7 +28,13 @@ public class ArticleService {
                 })
                 .filter(article -> repository.findByLink(article.getLink()) == null)
                 .filter(article -> article.getLink().length() < 255)
-                .forEach(article -> repository.saveAndFlush(article));
+                .forEach(article -> {
+                    System.out.println(article);
+                    try {
+                        repository.saveAndFlush(article);
+                    } catch (Exception ignored) {
+                    }
+                });
 
         parsers.get(0).getDriver().quit();
     }
