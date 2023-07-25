@@ -40,6 +40,7 @@ public class ApplicationStartupRunner implements ApplicationRunner {
     private void loadMediaSites() {
         MediaSiteType.getAllMedias()
                 .stream()
+                .peek(mediaSite -> log.info("Loading media site=" +mediaSite.getLink()))
                 .filter(mediaSite -> !mediaSiteRepository.existsById(mediaSite.getId()))
                 .forEach(mediaSite -> mediaSiteRepository.saveAndFlush(mediaSite));
     }

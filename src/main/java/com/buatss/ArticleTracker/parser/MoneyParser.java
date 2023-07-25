@@ -26,8 +26,6 @@ public class MoneyParser extends AbstractArticleFinder {
 
     @Override
     public void findArticles() {
-        System.setProperty("webdriver.gecko.driver", System.getenv("geckodriver"));
-
         driver.get(this.mediaSite.getLink());
 
         acceptCookies(driver);
