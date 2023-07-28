@@ -6,11 +6,9 @@ import com.buatss.ArticleTracker.util.WebScraperUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
@@ -52,21 +50,24 @@ public class MoneyParser extends AbstractArticleFinder {
                 || element.attr("href").contains("money.pl/"));
     }
 
-    private Function<Element, Pair<Elements, String>> elementsWithLink() {
-        return a -> Pair.of(a.select("h3"), a.attr("href"));
-    }
-
-    private Function<Pair<Elements, String>, Pair<String, String>> findTitle() {
-        return p -> Pair.of(p.getFirst().text(), p.getSecond());
-    }
-
     private Function<Element, Article> createArticle() {
         return e -> new Article(
                 null,
                 e.text(),
-                mediaSite.getLink().concat(e.attr("href")),
+                buildArticleLink(mediaSite.getLink(), e.attr("href")),
                 null,
                 mediaSite);
     }
-}
 
+    private String buildArticleLink(String mediaSiteLink, String foundLink) {
+        if (foundLink.startsWith(mediaSiteLink)) {
+            return foundLink;
+        } else if (foundLink.startsWith("https://money")) {
+            return foundLink.replaceFirst("https://", "https://www.");
+        } else if (foundLink.startsWith("/")) {
+            return mediaSiteLink + foundLink.substring(1);
+        } else {
+            return mediaSiteLink + foundLink;
+        }
+    }
+}

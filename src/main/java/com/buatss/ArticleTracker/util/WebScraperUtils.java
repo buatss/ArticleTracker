@@ -8,7 +8,7 @@ import java.util.Random;
 
 @UtilityClass
 public class WebScraperUtils {
-    private final Random random = new Random();
+    final Random random = new Random();
     private final long MIN_WAIT_TIME = 1000L;
     private final long MAX_WAIT_TIME = 3000L;
     private final int MIN_SCROLLS = 10;
