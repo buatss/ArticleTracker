@@ -1,17 +1,17 @@
 package com.buatss.ArticleTracker.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(uniqueConstraints = @UniqueConstraint(columnNames={"title", "media_site_id"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"title", "media_site_id"}))
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
