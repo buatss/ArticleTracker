@@ -48,7 +48,8 @@ public class WpParser extends AbstractArticleFinder {
     }
 
     private Predicate<Element> hasLinkToArticleWithTitle() {
-        return element -> element.hasAttr("href") && element.hasAttr("title") && !element.attr("title").isEmpty();
+        return element -> element.hasAttr("href") && element.hasAttr("title") && !element.attr("title").isEmpty() &&
+                element.attr("href").contains("wp.pl");
     }
 
     private Predicate<Element> hasLinkToArticle() {
