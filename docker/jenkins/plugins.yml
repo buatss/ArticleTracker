@@ -1,0 +1,6 @@
+plugins:
+  - artifactId: git
+  - artifactId: junit
+  - artifactId: sonar
+
+# see https://archives.jenkins.io/
