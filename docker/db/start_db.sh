@@ -33,7 +33,7 @@ docker run -d \
   -e MYSQL_ROOT_PASSWORD=password \
   -e MYSQL_USER=user \
   -e MYSQL_PASSWORD=password \
-  -e MYSQL_DATABASE=my_database \
+  -e MYSQL_DATABASE=at_database \
   $volume_option \
   -p 3306:3306 \
   mysql:8.0.33

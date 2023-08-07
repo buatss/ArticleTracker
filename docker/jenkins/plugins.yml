@@ -2,5 +2,6 @@ plugins:
   - artifactId: git
   - artifactId: junit
   - artifactId: sonar
+  - artifactId: maven-plugin
 
 # see https://archives.jenkins.io/
