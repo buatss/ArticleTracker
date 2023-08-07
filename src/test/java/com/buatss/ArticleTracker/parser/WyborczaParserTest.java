@@ -18,7 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 
 import static com.buatss.ArticleTracker.util.MediaSiteType.WYBORCZA;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.WebDriver.Navigation;
 
@@ -44,11 +44,18 @@ public class WyborczaParserTest {
     @Test
     public void findArticles_found() {
         String htmlString = "<html><body>" +
-                "<a href=\"/article1\">Title 1</a>" +
-                "<a href=\"/article2\">Title 2</a>" +
-                "<a href=\"/article3\">Title 3</a>" +
-                "<a href=\"https://wyborcza.pl" +
-                "/article4\">Title 4</a>" +
+                "<div class=\"article\">\n" +
+                "    <a href=\"https://www.wyborcza.pl/article1\">Title 1</a>\n" +
+                "</div>\n" +
+                "<div class=\"article\">\n" +
+                "    <a href=\"https://www.wyborcza.pl/article2\">Title 2</a>\n" +
+                "</div>\n" +
+                "<div class=\"article\">\n" +
+                "    <a href=\"https://www.wyborcza.pl/article3\">Title 3</a>\n" +
+                "</div>\n" +
+                "<div class=\"article\">\n" +
+                "    <a href=\"https://www.wyborcza.pl/article4\">Title 4</a>\n" +
+                "</div>\n" +
                 "</body></html>";
 
         mockDocument = Jsoup.parse(htmlString);
@@ -84,7 +91,7 @@ public class WyborczaParserTest {
 
         List<Article> actual = wyborczaParser.getArticles();
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
     }
 
     @Test

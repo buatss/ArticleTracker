@@ -3,8 +3,8 @@ FROM ubuntu:22.04
 # Compatibility https://firefox-source-docs.mozilla.org/testing/geckodriver/Support.html
 
 # update and install dependencies
-RUN apt-get update
-RUN apt-get upgrade
+RUN apt-get update -y
+RUN apt-get upgrade -y
 
 RUN apt-get install -y wget
 RUN apt-get install -y openjdk-17-jdk
@@ -34,4 +34,4 @@ COPY at.jar /at.jar
 RUN chmod +x /entrypoint.sh
 RUN chmod +x /at.jar
 
-ENTRYPOINT ["/entrypoint.sh"]
+#ENTRYPOINT ["/entrypoint.sh"]

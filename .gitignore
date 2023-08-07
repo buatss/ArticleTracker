@@ -29,6 +29,17 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
 .vscode/
+
 /docker/ArticleTracker/at.jar
+
+# Track only jobs configuration from jenkins container
+/docker/jenkins/jenkins_home/*
+!/docker/jenkins/jenkins_home/jobs/
+/docker/jenkins/jenkins_home/jobs/*
+!/docker/jenkins/jenkins_home/jobs/*/
+/docker/jenkins/jenkins_home/jobs/*/**
+!/docker/jenkins/jenkins_home/jobs/*/**/config.xml
+
+/docker/sonarqube/
+/docker/db/mysql_data/

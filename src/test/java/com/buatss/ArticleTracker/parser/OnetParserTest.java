@@ -43,12 +43,28 @@ public class OnetParserTest {
 
     @Test
     public void findArticles_found() {
-        String htmlString = "<html><body>" +
-                "<a href=\"/article1\">Title 1</a>" +
-                "<a href=\"/article2\">Title 2</a>" +
-                "<a href=\"/article3\">Title 3</a>" +
-                "<a href=\"https://onet.pl/article4\">Title 4</a>" +
-                "</body></html>";
+        String htmlString = "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <title>Article List</title>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <a href=\"https://www.onet.pl/article1\">\n" +
+                "        <h3>Title 1</h3>\n" +
+                "    </a>\n" +
+                "    <a href=\"https://www.onet.pl/article2\">\n" +
+                "        <h3>Title 2</h3>\n" +
+                "    </a>\n" +
+                "    <a href=\"https://www.onet.pl/article3\">\n" +
+                "        <h3>Title 3</h3>\n" +
+                "    </a>\n" +
+                "    <a href=\"https://www.onet.pl/article4\">\n" +
+                "        <h3>Title 4</h3>\n" +
+                "    </a>\n" +
+                "</body>\n" +
+                "</html>\n";
 
         mockDocument = Jsoup.parse(htmlString);
 

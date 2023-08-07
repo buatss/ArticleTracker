@@ -1,0 +1,56 @@
+version: "3.9"
+services:
+  at:
+    build:
+      context: ./ArticleTracker
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./ArticleTracker/at:/data
+    networks:
+      - at-network
+    command: tail -f /dev/null
+
+  mysql_db:
+    container_name: mysql_db
+    image: mysql:8.0.33
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: at_database
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/mysql_data:/var/lib/mysql
+    networks:
+      - at-network
+
+  jenkins:
+    build:
+      context: ./jenkins
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+    volumes:
+      - ./jenkins/jenkins_home:/var/jenkins_home
+    networks:
+      - at-network
+    depends_on:
+      - sonarqube
+
+  sonarqube:
+    image: sonarqube:latest
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./sonarqube/data:/opt/sonarqube/data
+      - ./sonarqube/extensions:/opt/sonarqube/extensions
+      - ./sonarqube/logs:/opt/sonarqube/logs
+      - ./sonarqube/temp:/opt/sonarqube/temp
+    networks:
+      - at-network
+
+networks:
+  at-network:
+    driver: bridge
