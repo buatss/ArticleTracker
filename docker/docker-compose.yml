@@ -9,6 +9,7 @@ services:
       - ./ArticleTracker/at:/data
     networks:
       - at-network
+    command: tail -f /dev/null
 
   mysql_db:
     container_name: mysql_db
@@ -35,6 +36,8 @@ services:
       - ./jenkins/jenkins_home:/var/jenkins_home
     networks:
       - at-network
+    depends_on:
+      - sonarqube
 
   sonarqube:
     image: sonarqube:latest

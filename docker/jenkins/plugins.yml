@@ -3,5 +3,6 @@ plugins:
   - artifactId: junit
   - artifactId: sonar
   - artifactId: maven-plugin
+  - artifactId: workflow-aggregator
 
 # see https://archives.jenkins.io/
