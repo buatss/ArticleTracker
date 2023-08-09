@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public enum MediaSiteType {
@@ -22,6 +23,6 @@ public enum MediaSiteType {
     public static List<MediaSite> getAllMedias() {
         return Arrays.stream(MediaSiteType.values())
                 .map(MediaSiteType::getMediaSite)
-                .toList();
+                .collect(Collectors.toList());
     }
 }
