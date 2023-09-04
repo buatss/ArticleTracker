@@ -13,11 +13,10 @@ import java.util.List;
 @Getter
 @Component
 public abstract class AbstractArticleFinder {
+    protected final MediaSite mediaSite;
+    protected final List<Article> articles = new ArrayList<>();
     @Autowired
     protected WebDriver driver;
-    protected final MediaSite mediaSite;
-
-    protected final List<Article> articles = new ArrayList<>();
 
     protected AbstractArticleFinder(MediaSite mediaSite) {
         this.mediaSite = mediaSite;

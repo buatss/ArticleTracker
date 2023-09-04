@@ -1,55 +1,58 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@1316.vd2290d3341a_f">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2144.v077a_d1928a_40"/>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2144.v077a_d1928a_40">
-      <jobProperties/>
-      <triggers/>
-      <parameters/>
-      <options/>
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-  </actions>
-  <description></description>
-  <keepDependencies>false</keepDependencies>
-  <properties/>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3731.ve4b_5b_857b_a_d3">
-    <script>pipeline {
-    agent any
+    <actions>
+        <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction
+                plugin="pipeline-model-definition@2.2144.v077a_d1928a_40"/>
+        <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction
+                plugin="pipeline-model-definition@2.2144.v077a_d1928a_40">
+            <jobProperties/>
+            <triggers/>
+            <parameters/>
+            <options/>
+        </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+    </actions>
+    <description></description>
+    <keepDependencies>false</keepDependencies>
+    <properties/>
+    <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition"
+                plugin="workflow-cps@3731.ve4b_5b_857b_a_d3">
+        <script>pipeline {
+            agent any
 
-    stages {
-        stage(&apos;Clone Repository&apos;) {
+            stages {
+            stage(&apos;Clone Repository&apos;) {
             steps {
-                checkout([$class: &apos;GitSCM&apos;, 
-                          branches: [[name: &apos;refs/heads/AR-6-Create-docker-compose-for-all-elements&apos;]], 
-                          doGenerateSubmoduleConfigurations: false, 
-                          extensions: [], 
-                          submoduleCfg: [], 
-                          userRemoteConfigs: [[url: &apos;https://github.com/buatss/ArticleTracker&apos;]]])
+            checkout([$class: &apos;GitSCM&apos;,
+            branches: [[name: &apos;refs/heads/AR-6-Create-docker-compose-for-all-elements&apos;]],
+            doGenerateSubmoduleConfigurations: false,
+            extensions: [],
+            submoduleCfg: [],
+            userRemoteConfigs: [[url: &apos;https://github.com/buatss/ArticleTracker&apos;]]])
             }
-        }
-        
-        stage(&apos;Print Java and Maven Versions&apos;) {
+            }
+
+            stage(&apos;Print Java and Maven Versions&apos;) {
             steps {
-                script {
-                    def javaVersion = sh(script: &apos;java -version&apos;, returnStdout: true).trim()
-                    def mavenVersion = sh(script: &apos;mvn -version&apos;, returnStdout: true).trim()
-                    echo &quot;Java Version: ${javaVersion}&quot;
-                    echo &quot;Maven Version: ${mavenVersion}&quot;
-                }
+            script {
+            def javaVersion = sh(script: &apos;java -version&apos;, returnStdout: true).trim()
+            def mavenVersion = sh(script: &apos;mvn -version&apos;, returnStdout: true).trim()
+            echo &quot;Java Version: ${javaVersion}&quot;
+            echo &quot;Maven Version: ${mavenVersion}&quot;
             }
-        }
-        
-        stage(&apos;Build Project&apos;) {
+            }
+            }
+
+            stage(&apos;Build Project&apos;) {
             steps {
-                sh &apos;chmod +x mvnw&apos;
-                sh &apos;./mvnw clean install surefire-report:report -Dspring.profiles.active=dev&apos;
+            sh &apos;chmod +x mvnw&apos;
+            sh &apos;./mvnw clean install surefire-report:report -Dspring.profiles.active=dev&apos;
             }
-        }
-    }
-}
-</script>
-    <sandbox>false</sandbox>
-  </definition>
-  <triggers/>
-  <disabled>false</disabled>
+            }
+            }
+            }
+        </script>
+        <sandbox>false</sandbox>
+    </definition>
+    <triggers/>
+    <disabled>false</disabled>
 </flow-definition>
