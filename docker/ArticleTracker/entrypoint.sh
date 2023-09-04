@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 echo "Executing entrypoint.sh"
 
 cp geckodriver /usr/local/bin/

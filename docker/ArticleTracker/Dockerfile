@@ -33,3 +33,5 @@ COPY entrypoint.sh /entrypoint.sh
 COPY at.jar /at.jar
 RUN chmod +x /entrypoint.sh
 RUN chmod +x /at.jar
+
+ENTRYPOINT ["/entrypoint.sh"]
