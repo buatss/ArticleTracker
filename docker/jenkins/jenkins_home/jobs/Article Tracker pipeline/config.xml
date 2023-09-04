@@ -42,7 +42,7 @@
         stage(&apos;Build Project&apos;) {
             steps {
                 sh &apos;chmod +x mvnw&apos;
-                sh &apos;./mvnw clean package surefire-report:report&apos;
+                sh &apos;./mvnw clean install surefire-report:report -Dspring.profiles.active=dev&apos;
             }
         }
     }
