@@ -15,9 +15,9 @@ import java.util.List;
 @Slf4j
 public class ArticleService {
     @Autowired
-    private ArticleRepository repository;
-    @Autowired
     List<AbstractArticleFinder> parsers;
+    @Autowired
+    private ArticleRepository repository;
 
     public void scrapAll() {
         parsers

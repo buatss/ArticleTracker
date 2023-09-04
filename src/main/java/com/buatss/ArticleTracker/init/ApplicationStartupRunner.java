@@ -16,12 +16,12 @@ import java.net.InetAddress;
 @Slf4j
 public class ApplicationStartupRunner implements ApplicationRunner {
 
-    @Value("${scrap.on.startup}")
-    private Boolean scrapOnStartup;
     @Autowired
     MediaSiteRepository mediaSiteRepository;
     @Autowired
     ArticleService service;
+    @Value("${scrap.on.startup}")
+    private Boolean scrapOnStartup;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -40,7 +40,7 @@ public class ApplicationStartupRunner implements ApplicationRunner {
     private void loadMediaSites() {
         MediaSiteType.getAllMedias()
                 .stream()
-                .peek(mediaSite -> log.info("Loading media site=" +mediaSite.getLink()))
+                .peek(mediaSite -> log.info("Loading media site=" + mediaSite.getLink()))
                 .filter(mediaSite -> !mediaSiteRepository.existsById(mediaSite.getId()))
                 .forEach(mediaSite -> mediaSiteRepository.saveAndFlush(mediaSite));
     }
