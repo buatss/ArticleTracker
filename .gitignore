@@ -31,8 +31,6 @@ build/
 
 .vscode/
 
-/docker/ArticleTracker/at.jar
-
 # Track only jobs configuration from jenkins container
 /docker/jenkins/jenkins_home/*
 !/docker/jenkins/jenkins_home/jobs/
@@ -41,5 +39,8 @@ build/
 /docker/jenkins/jenkins_home/jobs/*/**
 !/docker/jenkins/jenkins_home/jobs/*/**/config.xml
 
+/docker/ArticleTracker/at.jar
+/docker/ArticleTracker/logs.txt
 /docker/sonarqube/
 /docker/db/mysql_data/
+

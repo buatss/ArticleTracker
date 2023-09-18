@@ -31,7 +31,9 @@ RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckod
 
 COPY entrypoint.sh /entrypoint.sh
 COPY at.jar /at.jar
+COPY cronScript.sh /cronScript.sh
 RUN chmod +x /entrypoint.sh
 RUN chmod +x /at.jar
+RUN chmod +x /cronScript.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
