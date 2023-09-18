@@ -22,6 +22,8 @@ public class ApplicationStartupRunner implements ApplicationRunner {
     ArticleService service;
     @Value("${scrap.on.startup}")
     private Boolean scrapOnStartup;
+    @Value("${exit.after.scrap.on.startup}")
+    private Boolean exitAfterScrapOnStartup;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -34,6 +36,10 @@ public class ApplicationStartupRunner implements ApplicationRunner {
         if (scrapOnStartup) {
             log.info("Scrapping on startup.");
             service.scrapAll();
+        }
+
+        if (exitAfterScrapOnStartup) {
+            System.exit(0);
         }
     }
 
