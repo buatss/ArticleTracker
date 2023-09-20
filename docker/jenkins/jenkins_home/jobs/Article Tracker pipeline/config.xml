@@ -1,29 +1,26 @@
 <?xml version='1.1' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@1316.vd2290d3341a_f">
-    <actions>
-        <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction
-                plugin="pipeline-model-definition@2.2144.v077a_d1928a_40"/>
-        <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction
-                plugin="pipeline-model-definition@2.2144.v077a_d1928a_40">
-            <jobProperties/>
-            <triggers/>
-            <parameters/>
-            <options/>
-        </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-    </actions>
-    <description></description>
-    <keepDependencies>false</keepDependencies>
-    <properties/>
-    <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition"
-                plugin="workflow-cps@3731.ve4b_5b_857b_a_d3">
-        <script>pipeline {
+<flow-definition plugin="workflow-job@1342.v046651d5b_dfe">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2144.v077a_d1928a_40"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2144.v077a_d1928a_40">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3774.v4a_d648d409ce">
+    <script>pipeline {
             agent any
 
             stages {
             stage(&apos;Clone Repository&apos;) {
             steps {
             checkout([$class: &apos;GitSCM&apos;,
-            branches: [[name: &apos;refs/heads/AR-6-Create-docker-compose-for-all-elements&apos;]],
+            branches: [[name: &apos;refs/heads/AR-9-report-statistics-on-e-mail&apos;]],
             doGenerateSubmoduleConfigurations: false,
             extensions: [],
             submoduleCfg: [],
@@ -45,14 +42,14 @@
             stage(&apos;Build Project&apos;) {
             steps {
             sh &apos;chmod +x mvnw&apos;
-            sh &apos;./mvnw clean install surefire-report:report spring-boot:run -Dspring-boot.run.profiles=dev&apos;
+            sh &apos;./mvnw clean install surefire-report:report&apos;
             }
             }
             }
             }
         </script>
-        <sandbox>false</sandbox>
-    </definition>
-    <triggers/>
-    <disabled>false</disabled>
+    <sandbox>false</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
 </flow-definition>

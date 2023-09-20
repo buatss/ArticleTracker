@@ -29,7 +29,6 @@ public class ArticleService {
                 .filter(article -> repository.findByLink(article.getLink()) == null)
                 .filter(article -> article.getLink().length() < 255)
                 .forEach(article -> {
-                    System.out.println(article);
                     try {
                         repository.saveAndFlush(article);
                     } catch (Exception ignored) {

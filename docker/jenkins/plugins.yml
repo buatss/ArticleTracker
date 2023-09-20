@@ -4,5 +4,6 @@ plugins:
   - artifactId: sonar
   - artifactId: maven-plugin
   - artifactId: workflow-aggregator
+  - artifactId: email-ext
 
 # see https://archives.jenkins.io/
