@@ -38,6 +38,7 @@ build/
 !/docker/jenkins/jenkins_home/jobs/*/
 /docker/jenkins/jenkins_home/jobs/*/**
 !/docker/jenkins/jenkins_home/jobs/*/**/config.xml
+!/docker/jenkins/jenkins_home/jobs/*/**/Jenkinsfile
 
 /docker/ArticleTracker/at.jar
 /docker/ArticleTracker/logs.txt

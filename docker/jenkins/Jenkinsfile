@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                checkout([$class: 'GitSCM',
+                branches: [[name: 'refs/heads/AR-9-report-statistics-on-e-mail']],
+                doGenerateSubmoduleConfigurations: false,
+                extensions: [],
+                submoduleCfg: [],
+                userRemoteConfigs: [[url: 'https://github.com/buatss/ArticleTracker']]])
+            }
+        }
+
+        stage('Print Java and Maven Versions') {
+            steps {
+                script {
+                    def javaVersion = sh(script: 'java -version', returnStdout: true).trim()
+                    def mavenVersion = sh(script: 'mvn -version', returnStdout: true).trim()
+                    echo "Java Version: ${javaVersion}"
+                    echo "Maven Version: ${mavenVersion}"
+                }
+            }
+        }
+
+        stage('Build Project') {
+            steps {
+                sh 'mvn clean install surefire-report:report'
+            }
+        }
+    }
+
+ post {
+        success {
+            emailext subject: 'Article tracker build successful.',
+                body: 'The build completed successfully.',
+                to: 'buatss@gmail.com',
+                attachLog: true
+        }
+        failure {
+            emailext subject: 'Article tracker build failed.',
+                body: 'Check logs to see details.',
+                to: 'buatss@gmail.com',
+                attachLog: true
+        }
+    }
+}
