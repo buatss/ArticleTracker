@@ -17,7 +17,9 @@ public enum MediaSiteType {
     BI(new MediaSite(6, "BusinessInsider", "https://businessinsider.com.pl/")),
     PULS_HR(new MediaSite(7, "PulsHR", "https://www.pulshr.pl/")),
     BANKIER(new MediaSite(8, "Bankier", "https://www.bankier.pl/")),
-    WNP(new MediaSite(9, "WNP", "https://www.wnp.pl/"));
+    WNP(new MediaSite(9, "WNP", "https://www.wnp.pl/")),
+    NETTG(new MediaSite(10, "netTG", "https://www.nettg.pl/"));
+
 
     private final MediaSite mediaSite;
 
