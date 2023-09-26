@@ -17,14 +17,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
-import static com.buatss.ArticleTracker.util.MediaSiteType.PULS_HR;
+import static com.buatss.ArticleTracker.util.MediaSiteType.BANKIER;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
-public class PulsHRParserTest {
+public class BankierParserTest {
 
     @InjectMocks
-    private PulsHRParser parser;
+    private BankierParser parser;
 
     @Mock
     private WebDriver mockDriver;
@@ -44,11 +44,9 @@ public class PulsHRParserTest {
     @Test
     public void findArticles_found() {
         String htmlString = "<html><body>" +
-                "<a href=\"https://www.pulshr.pl/article1\">" +
-                "<h3>Title1<h3> 1" +
-                "</a>" +
-                "<a href=\"https://www.pulshr.pl/article2\">" +
-                "<h3>Title2<h3> 1" +
+                "<a href=\"https://www.bankier.pl/article1\">Title1</a>" +
+                "<a href=\"https://www.bankier.pl/article2\">" +
+                "<span class=\"m-title-with-label-item__title\">Title2</span>" +
                 "</a>" +
                 "</body></html>";
 
@@ -57,9 +55,9 @@ public class PulsHRParserTest {
         try (MockedStatic<WebScraperUtils> mockedUtils = mockStatic(WebScraperUtils.class);
              MockedStatic<Jsoup> mockedJsoup = mockStatic(Jsoup.class)
         ) {
-            doNothing().when(mockDriver).get(PULS_HR.getMediaSite().getLink());
+            doNothing().when(mockDriver).get(BANKIER.getMediaSite().getLink());
             when(mockDriver.findElement(
-                    By.xpath("//a[contains(@role, 'button')]//span[text()='I agree and go to the site']"))).thenReturn(
+                    By.xpath("//button[@id='onetrust-accept-btn-handler' and text()='Akceptuję']"))).thenReturn(
                     mockButton);
             doNothing().when(mockButton).click();
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
@@ -71,8 +69,8 @@ public class PulsHRParserTest {
         }
 
         List<Article> expected = List.of(
-                new Article(null, "Title1", "https://www.pulshr.pl/article1", null, PULS_HR.getMediaSite()),
-                new Article(null, "Title2", "https://www.pulshr.pl/article2", null, PULS_HR.getMediaSite())
+                new Article(null, "Title1", "https://www.bankier.pl/article1", null, BANKIER.getMediaSite()),
+                new Article(null, "Title2", "https://www.bankier.pl/article2", null, BANKIER.getMediaSite())
         );
 
         List<Article> actual = parser.getArticles();
@@ -91,9 +89,9 @@ public class PulsHRParserTest {
         try (MockedStatic<WebScraperUtils> mockedUtils = mockStatic(WebScraperUtils.class);
              MockedStatic<Jsoup> mockedJsoup = mockStatic(Jsoup.class)
         ) {
-            doNothing().when(mockDriver).get(PULS_HR.getMediaSite().getLink());
+            doNothing().when(mockDriver).get(BANKIER.getMediaSite().getLink());
             when(mockDriver.findElement(
-                    By.xpath("//a[contains(@role, 'button')]//span[text()='I agree and go to the site']"))).thenReturn(
+                    By.xpath("//button[@id='onetrust-accept-btn-handler' and text()='Akceptuję']"))).thenReturn(
                     mockButton);
             doNothing().when(mockButton).click();
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
