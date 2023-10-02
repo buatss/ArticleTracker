@@ -7,16 +7,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import static com.buatss.ArticleTracker.util.WebScraperUtils.waitRandomMilis;
 
 @Component
 public class OnetParser extends AbstractArticleFinder {
@@ -28,7 +23,7 @@ public class OnetParser extends AbstractArticleFinder {
     public void findArticles() {
         driver.get(this.mediaSite.getLink());
 
-        acceptCookies(driver);
+        acceptCookies("//button[contains(@class, 'cmp-button_button cmp-intro_acceptAll')]");
         WebScraperUtils.randomlyScrollPage(driver);
 
         Document doc = Jsoup.parse(driver.getPageSource());
@@ -40,13 +35,6 @@ public class OnetParser extends AbstractArticleFinder {
                 .map(findTitle())
                 .map(createArticle())
                 .forEach(this.getArticles()::add);
-    }
-
-    private void acceptCookies(WebDriver driver) {
-        waitRandomMilis();
-        WebElement button = driver.findElement(By.xpath("//button[contains(@class, 'cmp-intro_acceptAll')]"));
-        button.click();
-        waitRandomMilis();
     }
 
     private Predicate<Element> hasArticleLink() {
