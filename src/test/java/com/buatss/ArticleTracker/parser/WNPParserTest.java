@@ -17,14 +17,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
-import static com.buatss.ArticleTracker.util.MediaSiteType.ONET;
+import static com.buatss.ArticleTracker.util.MediaSiteType.WNP;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
-public class OnetParserTest {
+public class WNPParserTest {
 
     @InjectMocks
-    private OnetParser onetParser;
+    private WNPParser parser;
 
     @Mock
     private WebDriver mockDriver;
@@ -38,60 +38,44 @@ public class OnetParserTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        ReflectionTestUtils.setField(onetParser, "driver", mockDriver);
+        ReflectionTestUtils.setField(parser, "driver", mockDriver);
     }
 
     @Test
     public void findArticles_found() {
-        String htmlString = "<html lang=\"en\">\n" +
-                "<head>\n" +
-                "    <meta charset=\"UTF-8\">\n" +
-                "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
-                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
-                "    <title>Article List</title>\n" +
-                "</head>\n" +
-                "<body>\n" +
-                "    <a href=\"https://www.onet.pl/article1\">\n" +
-                "        <h3>Title 1</h3>\n" +
-                "    </a>\n" +
-                "    <a href=\"https://www.onet.pl/article2\">\n" +
-                "        <h3>Title 2</h3>\n" +
-                "    </a>\n" +
-                "    <a href=\"https://www.onet.pl/article3\">\n" +
-                "        <h3>Title 3</h3>\n" +
-                "    </a>\n" +
-                "    <a href=\"https://www.onet.pl/article4\">\n" +
-                "        <h3>Title 4</h3>\n" +
-                "    </a>\n" +
-                "</body>\n" +
-                "</html>\n";
+        String htmlString = "<html><body>" +
+                "<a href=\"https://www.wnp.pl/article1\">" +
+                "<h1>Title1<h3> 1" +
+                "</a>" +
+                "<a href=\"https://www.wnp.pl/article2\">" +
+                "<h2>Title2<h3> 1" +
+                "</a>" +
+                "</body></html>";
 
         mockDocument = Jsoup.parse(htmlString);
 
         try (MockedStatic<WebScraperUtils> mockedUtils = mockStatic(WebScraperUtils.class);
              MockedStatic<Jsoup> mockedJsoup = mockStatic(Jsoup.class)
         ) {
-            doNothing().when(mockDriver).get(ONET.getMediaSite().getLink());
+            doNothing().when(mockDriver).get(WNP.getMediaSite().getLink());
             when(mockDriver.findElement(
-                    By.xpath("//button[contains(@class, 'cmp-button_button cmp-intro_acceptAll')]"))).thenReturn(
+                    By.xpath("//a[contains(@role, 'button')]//span[text()='I agree and go to the site']"))).thenReturn(
                     mockButton);
             doNothing().when(mockButton).click();
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
 
-            onetParser.findArticles();
+            parser.findArticles();
 
-            mockedUtils.verify(WebScraperUtils::waitRandomMilis, times(1));
+            mockedUtils.verify(WebScraperUtils::waitRandomMilis);
             mockedUtils.verify(() -> WebScraperUtils.randomlyScrollPage(mockDriver));
         }
 
         List<Article> expected = List.of(
-                new Article(null, "Title 1", "https://www.onet.pl/article1", null, ONET.getMediaSite()),
-                new Article(null, "Title 2", "https://www.onet.pl/article2", null, ONET.getMediaSite()),
-                new Article(null, "Title 3", "https://www.onet.pl/article3", null, ONET.getMediaSite()),
-                new Article(null, "Title 4", "https://www.onet.pl/article4", null, ONET.getMediaSite())
+                new Article(null, "Title1", "https://www.wnp.pl/article1", null, WNP.getMediaSite()),
+                new Article(null, "Title2", "https://www.wnp.pl/article2", null, WNP.getMediaSite())
         );
 
-        List<Article> actual = onetParser.getArticles();
+        List<Article> actual = parser.getArticles();
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -107,22 +91,22 @@ public class OnetParserTest {
         try (MockedStatic<WebScraperUtils> mockedUtils = mockStatic(WebScraperUtils.class);
              MockedStatic<Jsoup> mockedJsoup = mockStatic(Jsoup.class)
         ) {
-            doNothing().when(mockDriver).get(ONET.getMediaSite().getLink());
+            doNothing().when(mockDriver).get(WNP.getMediaSite().getLink());
             when(mockDriver.findElement(
-                    By.xpath("//button[contains(@class, 'cmp-button_button cmp-intro_acceptAll')]"))).thenReturn(
+                    By.xpath("//a[contains(@role, 'button')]//span[text()='I agree and go to the site']"))).thenReturn(
                     mockButton);
             doNothing().when(mockButton).click();
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
 
-            onetParser.findArticles();
+            parser.findArticles();
 
-            mockedUtils.verify(WebScraperUtils::waitRandomMilis, times(1));
+            mockedUtils.verify(WebScraperUtils::waitRandomMilis);
             mockedUtils.verify(() -> WebScraperUtils.randomlyScrollPage(mockDriver));
         }
 
         List<Article> expected = List.of();
 
-        List<Article> actual = onetParser.getArticles();
+        List<Article> actual = parser.getArticles();
 
         assertThat(actual).isEqualTo(expected);
     }

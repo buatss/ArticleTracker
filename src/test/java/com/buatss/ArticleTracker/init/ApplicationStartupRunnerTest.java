@@ -30,6 +30,8 @@ public class ApplicationStartupRunnerTest {
     @Test
     public void scrapOnStartupTrue_scrapAll() throws Exception {
         ReflectionTestUtils.setField(applicationStartupRunner, "scrapOnStartup", true);
+        ReflectionTestUtils.setField(applicationStartupRunner, "exitAfterScrapOnStartup", false);
+
         List<MediaSiteType> allMedias = new ArrayList<>();
         allMedias.add(MediaSiteType.WP);
         allMedias.add(MediaSiteType.ONET);
@@ -48,6 +50,7 @@ public class ApplicationStartupRunnerTest {
     @Test
     public void scrapOnStartupFalse_notScrap() throws Exception {
         ReflectionTestUtils.setField(applicationStartupRunner, "scrapOnStartup", false);
+        ReflectionTestUtils.setField(applicationStartupRunner, "exitAfterScrapOnStartup", false);
         List<MediaSiteType> allMedias = new ArrayList<>();
         allMedias.add(MediaSiteType.WP);
         allMedias.add(MediaSiteType.ONET);
