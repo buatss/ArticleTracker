@@ -7,52 +7,64 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
 
 @Component
-public class MoneyParser extends AbstractArticleFinder {
-    public MoneyParser() {
-        super(MediaSiteType.MONEY.getMediaSite());
+public class NetTGParser extends AbstractArticleFinder {
+    public NetTGParser() {
+        super(MediaSiteType.NETTG.getMediaSite());
     }
 
     @Override
     public void findArticles() {
         driver.get(this.mediaSite.getLink());
 
-        acceptCookies("//button[contains(text(),'AKCEPTUJĘ I PRZECHODZĘ DO SERWISU')]");
         randomlyScrollPage(driver);
 
         Document doc = Jsoup.parse(driver.getPageSource());
 
-        doc.select("a")
+        doc.select("div")
                 .stream()
+                .filter(excludeCommentsSection())
+                .map(div -> div.select("a"))
+                .flatMap(Collection::stream)
+                .filter(hasLink())
                 .filter(hasArticle())
                 .map(createArticle())
+                .peek(System.err::println)
                 .forEach(this.getArticles()::add);
     }
 
+    private Predicate<? super Element> excludeCommentsSection() {
+        return div -> div.select("a")
+                .stream()
+                .noneMatch(e -> e.hasAttr("href")
+                        && e.attr("href").startsWith("/komentarze"));
+    }
+
+    private Predicate<? super Element> hasLink() {
+        return element -> element.hasAttr("href") && element.attr("href").startsWith("/");
+    }
+
     private Predicate<Element> hasArticle() {
-        return element -> element.hasAttr("href") && element.hasText() && (element.attr("href").startsWith("/")
-                || element.attr("href").contains("money.pl/"));
+        return element -> element.select("span").hasText();
     }
 
     private Function<Element, Article> createArticle() {
-        return e -> new Article(
-                null,
-                e.text(),
-                buildArticleLink(mediaSite.getLink(), e.attr("href")),
-                null,
-                mediaSite);
+        return e -> {
+            String title = e.select("span").text();
+            String link = buildArticleLink(mediaSite.getLink(), e.attr("href"));
+            return new Article(null, title, link, null, mediaSite);
+        };
     }
 
     private String buildArticleLink(String mediaSiteLink, String foundLink) {
-        if (foundLink.startsWith(mediaSiteLink)) {
+        if (foundLink.startsWith("http://") || foundLink.startsWith("https://")) {
             return foundLink;
-        } else if (foundLink.startsWith("https://money")) {
-            return foundLink.replaceFirst("https://", "https://www.");
         } else if (foundLink.startsWith("/")) {
             return mediaSiteLink + foundLink.substring(1);
         } else {

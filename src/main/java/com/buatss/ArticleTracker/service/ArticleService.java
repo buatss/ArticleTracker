@@ -30,6 +30,7 @@ public class ArticleService {
                 .filter(article -> article.getLink().length() < 255)
                 .forEach(article -> {
                     try {
+                        log.trace("Article = " + article);
                         repository.saveAndFlush(article);
                     } catch (Exception ignored) {
                     }

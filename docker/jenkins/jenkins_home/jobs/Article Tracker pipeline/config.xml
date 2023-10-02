@@ -1,63 +1,66 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@1346.v180a_63f40267">
-  <actions>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2144.v077a_d1928a_40"/>
-    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2144.v077a_d1928a_40">
-      <jobProperties/>
-      <triggers/>
-      <parameters/>
-      <options/>
-    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
-  </actions>
-  <description></description>
-  <keepDependencies>false</keepDependencies>
-  <properties/>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3791.va_c0338ea_b_59c">
-    <script>pipeline {
-    agent any
+    <actions>
+        <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction
+                plugin="pipeline-model-definition@2.2144.v077a_d1928a_40"/>
+        <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction
+                plugin="pipeline-model-definition@2.2144.v077a_d1928a_40">
+            <jobProperties/>
+            <triggers/>
+            <parameters/>
+            <options/>
+        </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+    </actions>
+    <description></description>
+    <keepDependencies>false</keepDependencies>
+    <properties/>
+    <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition"
+                plugin="workflow-cps@3791.va_c0338ea_b_59c">
+        <script>pipeline {
+            agent any
 
-    stages {
-        stage(&apos;Clone Repository&apos;) {
+            stages {
+            stage(&apos;Clone Repository&apos;) {
             steps {
-                checkout([$class: &apos;GitSCM&apos;,
-                branches: [[name: &apos;refs/heads/AR-9-report-statistics-on-e-mail&apos;]],
-                doGenerateSubmoduleConfigurations: false,
-                extensions: [],
-                submoduleCfg: [],
-                userRemoteConfigs: [[url: &apos;https://github.com/buatss/ArticleTracker&apos;]]])
+            checkout([$class: &apos;GitSCM&apos;,
+            branches: [[name: &apos;refs/heads/AR-9-report-statistics-on-e-mail&apos;]],
+            doGenerateSubmoduleConfigurations: false,
+            extensions: [],
+            submoduleCfg: [],
+            userRemoteConfigs: [[url: &apos;https://github.com/buatss/ArticleTracker&apos;]]])
             }
-        }
+            }
 
-        stage(&apos;Print Java and Maven Versions&apos;) {
+            stage(&apos;Print Java and Maven Versions&apos;) {
             steps {
-                script {
-                    def javaVersion = sh(script: &apos;java -version&apos;, returnStdout: true).trim()
-                    def mavenVersion = sh(script: &apos;mvn -version&apos;, returnStdout: true).trim()
-                    echo &quot;Java Version: ${javaVersion}&quot;
-                    echo &quot;Maven Version: ${mavenVersion}&quot;
-                }
+            script {
+            def javaVersion = sh(script: &apos;java -version&apos;, returnStdout: true).trim()
+            def mavenVersion = sh(script: &apos;mvn -version&apos;, returnStdout: true).trim()
+            echo &quot;Java Version: ${javaVersion}&quot;
+            echo &quot;Maven Version: ${mavenVersion}&quot;
             }
-        }
-        
-        stage(&apos;Build Project&apos;) {
-            steps {
-                sh &apos;mvn clean install surefire-report:report&apos;
             }
-        }
-    }
+            }
 
-    post {
-        failure {
+            stage(&apos;Build Project&apos;) {
+            steps {
+            sh &apos;mvn clean install surefire-report:report&apos;
+            }
+            }
+            }
+
+            post {
+            failure {
             emailext subject: &apos;Article tracker build failed.&apos;,
-                body: &apos;Check logs to see details.&apos;,
-                to: &apos;buatss@gmail.com&apos;,
-                attachLog: true
-        }
-    }
-}
-</script>
-    <sandbox>false</sandbox>
-  </definition>
-  <triggers/>
-  <disabled>false</disabled>
+            body: &apos;Check logs to see details.&apos;,
+            to: &apos;buatss@gmail.com&apos;,
+            attachLog: true
+            }
+            }
+            }
+        </script>
+        <sandbox>false</sandbox>
+    </definition>
+    <triggers/>
+    <disabled>false</disabled>
 </flow-definition>

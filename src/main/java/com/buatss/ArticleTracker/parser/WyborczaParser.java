@@ -6,16 +6,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.buatss.ArticleTracker.util.WebScraperUtils.*;
+import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
+import static com.buatss.ArticleTracker.util.WebScraperUtils.waitMs;
 
 @Component
 public class WyborczaParser extends AbstractArticleFinder {
@@ -27,7 +26,7 @@ public class WyborczaParser extends AbstractArticleFinder {
     public void findArticles() {
         driver.get(this.mediaSite.getLink());
 
-        acceptCookies(driver);
+        acceptCookies("//button[contains(text(),'AKCEPTUJĘ')]");
         delayedRefresh(driver);
         randomlyScrollPage(driver);
 
@@ -42,13 +41,6 @@ public class WyborczaParser extends AbstractArticleFinder {
 
     private Predicate<Element> hasArticleLinkWithText() {
         return e -> e.hasAttr("href") && e.attr("href").contains("wyborcza.pl") && e.hasText();
-    }
-
-    private void acceptCookies(WebDriver driver) {
-        waitRandomMilis();
-        WebElement button =
-                driver.findElement(By.xpath("//button[contains(text(),'AKCEPTUJĘ')]"));
-        button.click();
     }
 
     private void delayedRefresh(WebDriver driver) {
