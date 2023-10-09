@@ -1,6 +1,7 @@
 package com.buatss.ArticleTracker.parser;
 
 import com.buatss.ArticleTracker.model.Article;
+import com.buatss.ArticleTracker.parser.impl.WyborczaParser;
 import com.buatss.ArticleTracker.util.WebScraperUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -73,9 +74,6 @@ public class WyborczaParserTest {
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
 
             wyborczaParser.findArticles();
-
-            mockedUtils.verify(WebScraperUtils::waitRandomMilis);
-            mockedUtils.verify(() -> WebScraperUtils.randomlyScrollPage(mockDriver));
         }
 
         List<Article> expected = List.of(
@@ -115,9 +113,6 @@ public class WyborczaParserTest {
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
 
             wyborczaParser.findArticles();
-
-            mockedUtils.verify(WebScraperUtils::waitRandomMilis);
-            mockedUtils.verify(() -> WebScraperUtils.randomlyScrollPage(mockDriver));
         }
 
         List<Article> expected = List.of();

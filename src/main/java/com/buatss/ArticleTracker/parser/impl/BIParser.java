@@ -1,7 +1,10 @@
-package com.buatss.ArticleTracker.parser;
+package com.buatss.ArticleTracker.parser.impl;
 
 import com.buatss.ArticleTracker.model.Article;
+import com.buatss.ArticleTracker.parser.AbstractArticleFinder;
+import com.buatss.ArticleTracker.parser.CookieAcceptor;
 import com.buatss.ArticleTracker.util.MediaSiteType;
+import com.buatss.ArticleTracker.util.WebScraperUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,21 +13,14 @@ import org.springframework.stereotype.Component;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
-
 @Component
-public class BIParser extends AbstractArticleFinder {
+public class BIParser extends AbstractArticleFinder implements CookieAcceptor {
     public BIParser() {
         super(MediaSiteType.BI.getMediaSite());
     }
 
     @Override
     public void findArticles() {
-        driver.get(this.mediaSite.getLink());
-
-        acceptCookies("//button[@aria-label='accept and close']");
-        randomlyScrollPage(driver);
-
         Document doc = Jsoup.parse(driver.getPageSource());
 
         doc.select("a")
@@ -59,5 +55,10 @@ public class BIParser extends AbstractArticleFinder {
         } else {
             return mediaSiteLink + "www." + foundLink;
         }
+    }
+
+    @Override
+    public void acceptCookies() {
+        WebScraperUtils.acceptCookies("//button[@aria-label='accept and close']", driver, mediaSite);
     }
 }

@@ -1,7 +1,10 @@
-package com.buatss.ArticleTracker.parser;
+package com.buatss.ArticleTracker.parser.impl;
 
 import com.buatss.ArticleTracker.model.Article;
+import com.buatss.ArticleTracker.parser.AbstractArticleFinder;
+import com.buatss.ArticleTracker.parser.CookieAcceptor;
 import com.buatss.ArticleTracker.util.MediaSiteType;
+import com.buatss.ArticleTracker.util.WebScraperUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,21 +13,14 @@ import org.springframework.stereotype.Component;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
-
 @Component
-public class PulsHRParser extends AbstractArticleFinder {
-    public PulsHRParser() {
-        super(MediaSiteType.PULS_HR.getMediaSite());
+public class WNPParser extends AbstractArticleFinder implements CookieAcceptor {
+    public WNPParser() {
+        super(MediaSiteType.WNP.getMediaSite());
     }
 
     @Override
     public void findArticles() {
-        driver.get(this.mediaSite.getLink());
-
-        acceptCookies("//a[contains(@role, 'button')]//span[text()='I agree and go to the site']");
-        randomlyScrollPage(driver);
-
         Document doc = Jsoup.parse(driver.getPageSource());
 
         doc.select("a")
@@ -36,7 +32,7 @@ public class PulsHRParser extends AbstractArticleFinder {
     }
 
     private Predicate<Element> hasLink() {
-        return element -> element.hasAttr("href") && element.attr("href").contains("pulshr.pl/");
+        return element -> element.hasAttr("href") && element.attr("href").contains("wnp.pl/");
     }
 
     private Predicate<Element> hasArticle() {
@@ -61,5 +57,11 @@ public class PulsHRParser extends AbstractArticleFinder {
         } else {
             return mediaSiteLink + "www." + foundLink;
         }
+    }
+
+    @Override
+    public void acceptCookies() {
+        WebScraperUtils.acceptCookies("//a[contains(@role, 'button')]//span[text()='I agree and go to the site']",
+                driver, mediaSite);
     }
 }

@@ -1,6 +1,7 @@
-package com.buatss.ArticleTracker.parser;
+package com.buatss.ArticleTracker.parser.impl;
 
 import com.buatss.ArticleTracker.model.Article;
+import com.buatss.ArticleTracker.parser.AbstractArticleFinder;
 import com.buatss.ArticleTracker.util.MediaSiteType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -8,7 +9,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.function.Predicate;
 
 @Component
@@ -19,12 +19,7 @@ public class WpParser extends AbstractArticleFinder {
 
     @Override
     public void findArticles() {
-        Document doc;
-        try {
-            doc = Jsoup.connect(String.valueOf(this.mediaSite.getLink())).get();
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot connect to " + this.mediaSite.getLink());
-        }
+        Document doc = Jsoup.parse(driver.getPageSource());
 
         findArticlesInHyperlink(doc);
         findArticlesNestedInHyperlink(doc);

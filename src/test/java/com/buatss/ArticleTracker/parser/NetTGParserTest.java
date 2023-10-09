@@ -1,6 +1,7 @@
 package com.buatss.ArticleTracker.parser;
 
 import com.buatss.ArticleTracker.model.Article;
+import com.buatss.ArticleTracker.parser.impl.NetTGParser;
 import com.buatss.ArticleTracker.util.WebScraperUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,7 +18,8 @@ import java.util.List;
 
 import static com.buatss.ArticleTracker.util.MediaSiteType.NETTG;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mockStatic;
 
 public class NetTGParserTest {
 
@@ -58,14 +60,12 @@ public class NetTGParserTest {
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
 
             parser.findArticles();
-
-            mockedUtils.verify(() -> WebScraperUtils.randomlyScrollPage(mockDriver));
         }
 
         List<Article> expected = List.of(
-                new Article(null, "Title 1", "https://www.nettg.pl/article1", null, NETTG.getMediaSite()),
-                new Article(null, "Title 2", "https://www.nettg.pl/article2", null, NETTG.getMediaSite()),
-                new Article(null, "Title 3", "https://www.nettg.pl/article3", null, NETTG.getMediaSite())
+                new Article(null, "Title 1", "https://nettg.pl/article1", null, NETTG.getMediaSite()),
+                new Article(null, "Title 2", "https://nettg.pl/article2", null, NETTG.getMediaSite()),
+                new Article(null, "Title 3", "https://nettg.pl/article3", null, NETTG.getMediaSite())
         );
 
         List<Article> actual = parser.getArticles();
@@ -88,8 +88,6 @@ public class NetTGParserTest {
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
 
             parser.findArticles();
-
-            mockedUtils.verify(() -> WebScraperUtils.randomlyScrollPage(mockDriver));
         }
 
         List<Article> expected = List.of();

@@ -1,35 +1,28 @@
-package com.buatss.ArticleTracker.parser;
+package com.buatss.ArticleTracker.parser.impl;
 
 import com.buatss.ArticleTracker.model.Article;
+import com.buatss.ArticleTracker.parser.AbstractArticleFinder;
+import com.buatss.ArticleTracker.parser.CookieAcceptor;
 import com.buatss.ArticleTracker.util.MediaSiteType;
+import com.buatss.ArticleTracker.util.WebScraperUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.WebDriver;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
-import static com.buatss.ArticleTracker.util.WebScraperUtils.waitMs;
-
 @Component
-public class WyborczaParser extends AbstractArticleFinder {
+public class WyborczaParser extends AbstractArticleFinder implements CookieAcceptor {
     protected WyborczaParser() {
         super(MediaSiteType.WYBORCZA.getMediaSite());
     }
 
     @Override
     public void findArticles() {
-        driver.get(this.mediaSite.getLink());
-
-        acceptCookies("//button[contains(text(),'AKCEPTUJĘ')]");
-        delayedRefresh(driver);
-        randomlyScrollPage(driver);
-
         Document doc = Jsoup.parse(driver.getPageSource());
 
         doc.select("a")
@@ -41,11 +34,6 @@ public class WyborczaParser extends AbstractArticleFinder {
 
     private Predicate<Element> hasArticleLinkWithText() {
         return e -> e.hasAttr("href") && e.attr("href").contains("wyborcza.pl") && e.hasText();
-    }
-
-    private void delayedRefresh(WebDriver driver) {
-        waitMs(5000L);
-        driver.navigate().refresh();
     }
 
     private Function<Element, Pair<Elements, String>> elementsWithLink() {
@@ -65,6 +53,11 @@ public class WyborczaParser extends AbstractArticleFinder {
                         null,
                         this.mediaSite
                 );
+    }
+
+    @Override
+    public void acceptCookies() {
+        WebScraperUtils.acceptCookies("//button[contains(text(),'AKCEPTUJĘ')]", driver, mediaSite);
     }
 }
 

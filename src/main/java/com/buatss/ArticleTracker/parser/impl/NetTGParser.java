@@ -1,6 +1,7 @@
-package com.buatss.ArticleTracker.parser;
+package com.buatss.ArticleTracker.parser.impl;
 
 import com.buatss.ArticleTracker.model.Article;
+import com.buatss.ArticleTracker.parser.AbstractArticleFinder;
 import com.buatss.ArticleTracker.util.MediaSiteType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,8 +12,6 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
-
 @Component
 public class NetTGParser extends AbstractArticleFinder {
     public NetTGParser() {
@@ -21,10 +20,6 @@ public class NetTGParser extends AbstractArticleFinder {
 
     @Override
     public void findArticles() {
-        driver.get(this.mediaSite.getLink());
-
-        randomlyScrollPage(driver);
-
         Document doc = Jsoup.parse(driver.getPageSource());
 
         doc.select("div")

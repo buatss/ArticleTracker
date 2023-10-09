@@ -1,33 +1,26 @@
-package com.buatss.ArticleTracker.parser;
+package com.buatss.ArticleTracker.parser.impl;
 
 import com.buatss.ArticleTracker.model.Article;
+import com.buatss.ArticleTracker.parser.AbstractArticleFinder;
+import com.buatss.ArticleTracker.parser.CookieAcceptor;
 import com.buatss.ArticleTracker.util.MediaSiteType;
-import lombok.extern.slf4j.Slf4j;
+import com.buatss.ArticleTracker.util.WebScraperUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
-
 @Component
-@Slf4j
-public class BankierParser extends AbstractArticleFinder {
-    public BankierParser() {
-        super(MediaSiteType.BANKIER.getMediaSite());
+public class PulsHRParser extends AbstractArticleFinder implements CookieAcceptor {
+    public PulsHRParser() {
+        super(MediaSiteType.PULS_HR.getMediaSite());
     }
 
     @Override
     public void findArticles() {
-        driver.get(this.mediaSite.getLink());
-
-        acceptCookies("//button[@id='onetrust-accept-btn-handler' and text()='Akceptuję']");
-        randomlyScrollPage(driver);
-
         Document doc = Jsoup.parse(driver.getPageSource());
 
         doc.select("a")
@@ -39,19 +32,18 @@ public class BankierParser extends AbstractArticleFinder {
     }
 
     private Predicate<Element> hasLink() {
-        return element -> element.hasAttr("href") && (element.attr("href").contains("bankier.pl/")
-                || element.attr("href").startsWith("/"));
+        return element -> element.hasAttr("href") && element.attr("href").contains("pulshr.pl/");
     }
 
     private Predicate<Element> hasArticle() {
-        return element -> element.hasText();
+        return element -> element.select("h1").hasText() || element.select("h2").hasText() ||
+                element.select("h3").hasText();
     }
 
     private Function<Element, Article> createArticle() {
         return e -> new Article(
                 null,
-                e.hasText() ? e.text() : Objects.requireNonNull(e.select("span.m-title-with-label-item__title").first())
-                        .text(),
+                e.text(),
                 buildArticleLink(mediaSite.getLink(), e.attr("href")),
                 null,
                 mediaSite);
@@ -65,5 +57,11 @@ public class BankierParser extends AbstractArticleFinder {
         } else {
             return mediaSiteLink + "www." + foundLink;
         }
+    }
+
+    @Override
+    public void acceptCookies() {
+        WebScraperUtils.acceptCookies("//a[contains(@role, 'button')]//span[text()='I agree and go to the site']",
+                driver, mediaSite);
     }
 }
