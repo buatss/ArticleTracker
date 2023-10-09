@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
-
 @Component
 public class MoneyParser extends AbstractArticleFinder implements CookieAcceptor {
     public MoneyParser() {
@@ -23,8 +21,6 @@ public class MoneyParser extends AbstractArticleFinder implements CookieAcceptor
 
     @Override
     public void findArticles() {
-        randomlyScrollPage(driver);
-
         Document doc = Jsoup.parse(driver.getPageSource());
 
         doc.select("a")

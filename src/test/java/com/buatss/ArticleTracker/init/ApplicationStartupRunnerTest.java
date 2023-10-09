@@ -28,8 +28,9 @@ public class ApplicationStartupRunnerTest {
     private ArticleService articleService;
 
     @Test
-    public void scrapOnStartupTrue_scrapAll() throws Exception {
+    public void scrapOnStartupTrue_scrapAllSequential() throws Exception {
         ReflectionTestUtils.setField(applicationStartupRunner, "scrapOnStartup", true);
+        ReflectionTestUtils.setField(applicationStartupRunner, "scrapParallelOnStartup", false);
         ReflectionTestUtils.setField(applicationStartupRunner, "exitAfterScrapOnStartup", false);
 
         List<MediaSiteType> allMedias = new ArrayList<>();
@@ -45,6 +46,27 @@ public class ApplicationStartupRunnerTest {
         verify(mediaSiteRepository, times(1)).saveAndFlush(MediaSiteType.ONET.getMediaSite());
         verify(mediaSiteRepository, never()).saveAndFlush(MediaSiteType.WP.getMediaSite());
         verify(articleService, times(1)).scrapAllSequential();
+    }
+
+    @Test
+    public void scrapOnStartupTrue_scrapAllParallel() throws Exception {
+        ReflectionTestUtils.setField(applicationStartupRunner, "scrapOnStartup", true);
+        ReflectionTestUtils.setField(applicationStartupRunner, "scrapParallelOnStartup", true);
+        ReflectionTestUtils.setField(applicationStartupRunner, "exitAfterScrapOnStartup", false);
+
+        List<MediaSiteType> allMedias = new ArrayList<>();
+        allMedias.add(MediaSiteType.WP);
+        allMedias.add(MediaSiteType.ONET);
+
+        when(mediaSiteRepository.existsById(MediaSiteType.WP.getMediaSite().getId())).thenReturn(true);
+        when(mediaSiteRepository.existsById(MediaSiteType.ONET.getMediaSite().getId())).thenReturn(false);
+        doNothing().when(articleService).scrapAllParallel(6);
+
+        applicationStartupRunner.run(null);
+
+        verify(mediaSiteRepository, times(1)).saveAndFlush(MediaSiteType.ONET.getMediaSite());
+        verify(mediaSiteRepository, never()).saveAndFlush(MediaSiteType.WP.getMediaSite());
+        verify(articleService, times(1)).scrapAllParallel(6);
     }
 
     @Test

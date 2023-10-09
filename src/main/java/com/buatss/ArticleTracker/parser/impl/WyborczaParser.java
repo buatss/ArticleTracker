@@ -9,15 +9,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.WebDriver;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
-import static com.buatss.ArticleTracker.util.WebScraperUtils.waitMs;
 
 @Component
 public class WyborczaParser extends AbstractArticleFinder implements CookieAcceptor {
@@ -27,9 +23,6 @@ public class WyborczaParser extends AbstractArticleFinder implements CookieAccep
 
     @Override
     public void findArticles() {
-        delayedRefresh(driver);
-        randomlyScrollPage(driver);
-
         Document doc = Jsoup.parse(driver.getPageSource());
 
         doc.select("a")
@@ -41,11 +34,6 @@ public class WyborczaParser extends AbstractArticleFinder implements CookieAccep
 
     private Predicate<Element> hasArticleLinkWithText() {
         return e -> e.hasAttr("href") && e.attr("href").contains("wyborcza.pl") && e.hasText();
-    }
-
-    private void delayedRefresh(WebDriver driver) {
-        waitMs(5000L);
-        driver.navigate().refresh();
     }
 
     private Function<Element, Pair<Elements, String>> elementsWithLink() {

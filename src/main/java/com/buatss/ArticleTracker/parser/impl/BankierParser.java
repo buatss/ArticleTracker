@@ -15,7 +15,6 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
 
 @Component
 @Slf4j
@@ -26,8 +25,6 @@ public class BankierParser extends AbstractArticleFinder implements CookieAccept
 
     @Override
     public void findArticles() {
-        randomlyScrollPage(driver);
-
         Document doc = Jsoup.parse(driver.getPageSource());
 
         doc.select("a")
@@ -44,7 +41,7 @@ public class BankierParser extends AbstractArticleFinder implements CookieAccept
     }
 
     private Predicate<Element> hasArticle() {
-        return element -> element.hasText();
+        return Element::hasText;
     }
 
     private Function<Element, Article> createArticle() {

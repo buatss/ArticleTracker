@@ -74,9 +74,6 @@ public class WyborczaParserTest {
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
 
             wyborczaParser.findArticles();
-
-            mockedUtils.verify(WebScraperUtils::waitRandomMilis);
-            mockedUtils.verify(() -> WebScraperUtils.randomlyScrollPage(mockDriver));
         }
 
         List<Article> expected = List.of(
@@ -116,9 +113,6 @@ public class WyborczaParserTest {
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
 
             wyborczaParser.findArticles();
-
-            mockedUtils.verify(WebScraperUtils::waitRandomMilis);
-            mockedUtils.verify(() -> WebScraperUtils.randomlyScrollPage(mockDriver));
         }
 
         List<Article> expected = List.of();

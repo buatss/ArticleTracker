@@ -23,8 +23,6 @@ public class OnetParser extends AbstractArticleFinder implements CookieAcceptor 
 
     @Override
     public void findArticles() {
-        WebScraperUtils.randomlyScrollPage(driver);
-
         Document doc = Jsoup.parse(driver.getPageSource());
         doc.select("a")
                 .stream()

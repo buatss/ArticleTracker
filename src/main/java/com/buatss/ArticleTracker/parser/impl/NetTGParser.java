@@ -12,8 +12,6 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
-
 @Component
 public class NetTGParser extends AbstractArticleFinder {
     public NetTGParser() {
@@ -22,8 +20,6 @@ public class NetTGParser extends AbstractArticleFinder {
 
     @Override
     public void findArticles() {
-        randomlyScrollPage(driver);
-
         Document doc = Jsoup.parse(driver.getPageSource());
 
         doc.select("div")

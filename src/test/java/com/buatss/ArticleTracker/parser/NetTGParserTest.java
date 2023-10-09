@@ -60,8 +60,6 @@ public class NetTGParserTest {
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
 
             parser.findArticles();
-
-            mockedUtils.verify(() -> WebScraperUtils.randomlyScrollPage(mockDriver));
         }
 
         List<Article> expected = List.of(
@@ -90,8 +88,6 @@ public class NetTGParserTest {
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
 
             parser.findArticles();
-
-            mockedUtils.verify(() -> WebScraperUtils.randomlyScrollPage(mockDriver));
         }
 
         List<Article> expected = List.of();

@@ -16,12 +16,17 @@ public final class WebScraperUtils {
     private static final int MIN_SCROLLS = 10;
     private static final int MAX_SCROLLS = 20;
 
-    public static void randomlyScrollPage(WebDriver driver) {
+    public static void randomlyScrollDownWholePage(WebDriver driver) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         for (int i = 0; i < random.nextInt(MAX_SCROLLS - MIN_SCROLLS) + MIN_SCROLLS; i++) {
             js.executeScript("window.scrollBy(0, 1000)");
             waitRandomMilis();
         }
+    }
+
+    public static void randomlyScrollDown(WebDriver driver) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(1000, 3000)");
     }
 
     public static void waitRandomMilis() {

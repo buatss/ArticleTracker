@@ -64,9 +64,6 @@ public class MoneyParserTest {
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
 
             moneyParser.findArticles();
-
-            mockedUtils.verify(WebScraperUtils::waitRandomMilis);
-            mockedUtils.verify(() -> WebScraperUtils.randomlyScrollPage(mockDriver));
         }
 
         List<Article> expected = List.of(
@@ -100,9 +97,6 @@ public class MoneyParserTest {
             mockedJsoup.when(() -> Jsoup.parse(mockDriver.getPageSource())).thenReturn(mockDocument);
 
             moneyParser.findArticles();
-
-            mockedUtils.verify(WebScraperUtils::waitRandomMilis);
-            mockedUtils.verify(() -> WebScraperUtils.randomlyScrollPage(mockDriver));
         }
 
         List<Article> expected = List.of();

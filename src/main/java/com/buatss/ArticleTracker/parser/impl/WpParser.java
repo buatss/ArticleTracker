@@ -9,7 +9,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.function.Predicate;
 
 @Component
@@ -20,12 +19,7 @@ public class WpParser extends AbstractArticleFinder {
 
     @Override
     public void findArticles() {
-        Document doc;
-        try {
-            doc = Jsoup.connect(String.valueOf(this.mediaSite.getLink())).get();
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot connect to " + this.mediaSite.getLink());
-        }
+        Document doc = Jsoup.parse(driver.getPageSource());
 
         findArticlesInHyperlink(doc);
         findArticlesNestedInHyperlink(doc);
