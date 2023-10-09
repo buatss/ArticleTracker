@@ -1,7 +1,10 @@
-package com.buatss.ArticleTracker.parser;
+package com.buatss.ArticleTracker.parser.impl;
 
 import com.buatss.ArticleTracker.model.Article;
+import com.buatss.ArticleTracker.parser.AbstractArticleFinder;
+import com.buatss.ArticleTracker.parser.CookieAcceptor;
 import com.buatss.ArticleTracker.util.MediaSiteType;
+import com.buatss.ArticleTracker.util.WebScraperUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,16 +20,13 @@ import static com.buatss.ArticleTracker.util.WebScraperUtils.randomlyScrollPage;
 import static com.buatss.ArticleTracker.util.WebScraperUtils.waitMs;
 
 @Component
-public class WyborczaParser extends AbstractArticleFinder {
+public class WyborczaParser extends AbstractArticleFinder implements CookieAcceptor {
     protected WyborczaParser() {
         super(MediaSiteType.WYBORCZA.getMediaSite());
     }
 
     @Override
     public void findArticles() {
-        driver.get(this.mediaSite.getLink());
-
-        acceptCookies("//button[contains(text(),'AKCEPTUJĘ')]");
         delayedRefresh(driver);
         randomlyScrollPage(driver);
 
@@ -65,6 +65,11 @@ public class WyborczaParser extends AbstractArticleFinder {
                         null,
                         this.mediaSite
                 );
+    }
+
+    @Override
+    public void acceptCookies() {
+        WebScraperUtils.acceptCookies("//button[contains(text(),'AKCEPTUJĘ')]", driver, mediaSite);
     }
 }
 

@@ -1,6 +1,8 @@
-package com.buatss.ArticleTracker.parser;
+package com.buatss.ArticleTracker.parser.impl;
 
 import com.buatss.ArticleTracker.model.Article;
+import com.buatss.ArticleTracker.parser.AbstractArticleFinder;
+import com.buatss.ArticleTracker.parser.CookieAcceptor;
 import com.buatss.ArticleTracker.util.MediaSiteType;
 import com.buatss.ArticleTracker.util.WebScraperUtils;
 import org.jsoup.Jsoup;
@@ -14,16 +16,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Component
-public class OnetParser extends AbstractArticleFinder {
+public class OnetParser extends AbstractArticleFinder implements CookieAcceptor {
     protected OnetParser() {
         super(MediaSiteType.ONET.getMediaSite());
     }
 
     @Override
     public void findArticles() {
-        driver.get(this.mediaSite.getLink());
-
-        acceptCookies("//button[contains(@class, 'cmp-button_button cmp-intro_acceptAll')]");
         WebScraperUtils.randomlyScrollPage(driver);
 
         Document doc = Jsoup.parse(driver.getPageSource());
@@ -51,6 +50,12 @@ public class OnetParser extends AbstractArticleFinder {
 
     private Function<Pair<String, String>, Article> createArticle() {
         return p -> new Article(null, p.getFirst(), p.getSecond(), null, this.mediaSite);
+    }
+
+    @Override
+    public void acceptCookies() {
+        WebScraperUtils.acceptCookies("//button[contains(@class, 'cmp-button_button cmp-intro_acceptAll')]", driver,
+                mediaSite);
     }
 }
 

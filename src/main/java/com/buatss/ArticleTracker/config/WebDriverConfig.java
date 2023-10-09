@@ -17,7 +17,7 @@ public class WebDriverConfig {
         FirefoxOptions options = new FirefoxOptions();
 
         //disable graphical interface
-        options.setHeadless(true);
+        options.setHeadless(false);
 
         //reduce logs output from geckodriver
         options.addPreference("devtools.console.stdout.content", false);

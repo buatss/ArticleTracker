@@ -35,7 +35,7 @@ public class ApplicationStartupRunner implements ApplicationRunner {
 
         if (scrapOnStartup) {
             log.info("Scrapping on startup.");
-            service.scrapAll();
+            service.scrapAllParallel(5);
         }
 
         if (exitAfterScrapOnStartup) {

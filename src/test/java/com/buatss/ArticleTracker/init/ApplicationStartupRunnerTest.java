@@ -38,13 +38,13 @@ public class ApplicationStartupRunnerTest {
 
         when(mediaSiteRepository.existsById(MediaSiteType.WP.getMediaSite().getId())).thenReturn(true);
         when(mediaSiteRepository.existsById(MediaSiteType.ONET.getMediaSite().getId())).thenReturn(false);
-        doNothing().when(articleService).scrapAll();
+        doNothing().when(articleService).scrapAllSequential();
 
         applicationStartupRunner.run(null);
 
         verify(mediaSiteRepository, times(1)).saveAndFlush(MediaSiteType.ONET.getMediaSite());
         verify(mediaSiteRepository, never()).saveAndFlush(MediaSiteType.WP.getMediaSite());
-        verify(articleService, times(1)).scrapAll();
+        verify(articleService, times(1)).scrapAllSequential();
     }
 
     @Test
@@ -62,6 +62,6 @@ public class ApplicationStartupRunnerTest {
 
         verify(mediaSiteRepository, times(1)).saveAndFlush(MediaSiteType.ONET.getMediaSite());
         verify(mediaSiteRepository, never()).saveAndFlush(MediaSiteType.WP.getMediaSite());
-        verify(articleService, never()).scrapAll();
+        verify(articleService, never()).scrapAllSequential();
     }
 }

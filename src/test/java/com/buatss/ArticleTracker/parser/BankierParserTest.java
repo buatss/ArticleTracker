@@ -1,6 +1,7 @@
 package com.buatss.ArticleTracker.parser;
 
 import com.buatss.ArticleTracker.model.Article;
+import com.buatss.ArticleTracker.parser.impl.BankierParser;
 import com.buatss.ArticleTracker.util.WebScraperUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

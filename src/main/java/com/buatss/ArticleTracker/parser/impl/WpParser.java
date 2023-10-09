@@ -1,6 +1,7 @@
-package com.buatss.ArticleTracker.parser;
+package com.buatss.ArticleTracker.parser.impl;
 
 import com.buatss.ArticleTracker.model.Article;
+import com.buatss.ArticleTracker.parser.AbstractArticleFinder;
 import com.buatss.ArticleTracker.util.MediaSiteType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
