@@ -63,9 +63,9 @@ public class NetTGParserTest {
         }
 
         List<Article> expected = List.of(
-                new Article(null, "Title 1", "https://www.nettg.pl/article1", null, NETTG.getMediaSite()),
-                new Article(null, "Title 2", "https://www.nettg.pl/article2", null, NETTG.getMediaSite()),
-                new Article(null, "Title 3", "https://www.nettg.pl/article3", null, NETTG.getMediaSite())
+                new Article(null, "Title 1", "https://nettg.pl/article1", null, NETTG.getMediaSite()),
+                new Article(null, "Title 2", "https://nettg.pl/article2", null, NETTG.getMediaSite()),
+                new Article(null, "Title 3", "https://nettg.pl/article3", null, NETTG.getMediaSite())
         );
 
         List<Article> actual = parser.getArticles();

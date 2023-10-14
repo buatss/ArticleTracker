@@ -5,25 +5,23 @@ import com.buatss.ArticleTracker.model.Article;
 import com.buatss.ArticleTracker.parser.AbstractArticleFinder;
 import com.buatss.ArticleTracker.parser.CookieAcceptor;
 import com.buatss.ArticleTracker.util.WebScraperUtils;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
-import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.*;
+import java.util.concurrent.CyclicBarrier;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class ArticleService {
     @Autowired
@@ -32,23 +30,16 @@ public class ArticleService {
     WebDriver driver;
     @Autowired
     private ArticleRepository repository;
+    private final CyclicBarrier barrier = new CyclicBarrier(6);
 
     public void scrapAllSequential() {
         parsers
                 .stream()
-                .flatMap(finder -> {
-                    finder.findArticles();
-                    try {
-                        Thread.sleep(1000L);
-                    } catch (InterruptedException e) {
-                        log.error(e.getLocalizedMessage());
-                    }
-                    return finder.getArticles().stream();
-                })
+                .map(AbstractArticleFinder::getArticles)
+                .flatMap(waitAndStreamArticles())
                 .filter(isNotDuplicated())
                 .filter(isLinkNotTooLong())
                 .forEach(saveArticleInDb());
-
         driver.quit();
     }
 
@@ -69,27 +60,62 @@ public class ArticleService {
             WebScraperUtils.waitRandomMilis();
 
             for (int i = 0; i < 4; i++) {
-                scrollEachPageAndWait(buffer, 1000L);
+                scrollEachPageAndWait(1000L);
             }
-            ExecutorService executor = Executors.newFixedThreadPool(6);
-            for (AbstractArticleFinder finder : buffer) {
-                executor.submit(findAndSaveArticles(finder));
-            }
-            executor.shutdown();
+            findArticlesInEachPage(buffer);
+            saveFoundArticles(buffer);
             closeAllTabs();
         }
         driver.quit();
     }
 
-    private Runnable findAndSaveArticles(AbstractArticleFinder finder) {
-        return () -> {
-            finder.findArticles();
-            finder.getArticles()
+    private void findArticlesInEachPage(List<AbstractArticleFinder> buffer) {
+        Set<String> handles = driver.getWindowHandles();
+        for (String handle : handles) {
+            driver.switchTo().window(handle);
+            Optional<AbstractArticleFinder> finder = buffer
                     .parallelStream()
-                    .filter(isNotDuplicated())
-                    .filter(isLinkNotTooLong())
-                    .forEach(saveArticleInDb());
+                    .filter(p -> driver.getCurrentUrl().contains(p.getMediaSite().getLink()))
+                    .findFirst();
+            if (finder.isPresent()) {
+                log.trace("Finding articles for " + finder.get().getMediaSite().toString());
+                finder.get().findArticles();
+            } else {
+                log.error("Couldn't match parser to URL:" + driver.getCurrentUrl());
+            }
+        }
+    }
+
+    private void scrollEachPageAndWait(Long time) {
+        Set<String> handles = driver.getWindowHandles();
+
+        for (String handle : handles) {
+            driver.switchTo().window(handle);
+            WebScraperUtils.randomlyScrollDown(driver);
+            WebScraperUtils.waitMs(time);
+        }
+    }
+
+    private static Function<List<Article>, Stream<? extends Article>> waitAndStreamArticles() {
+        return a ->
+        {
+            try {
+                Thread.sleep(1000L);
+            } catch (InterruptedException e) {
+                log.error(e.getLocalizedMessage());
+            }
+            return a.stream();
         };
+    }
+
+    private void saveFoundArticles(List<AbstractArticleFinder> buffer) {
+        buffer
+                .parallelStream()
+                .map(AbstractArticleFinder::getArticles)
+                .flatMap(Collection::parallelStream)
+                .filter(isNotDuplicated())
+                .filter(isLinkNotTooLong())
+                .forEach(saveArticleInDb());
     }
 
     private Consumer<Article> saveArticleInDb() {
@@ -119,22 +145,12 @@ public class ArticleService {
                 driver.switchTo().window(handle);
                 try {
                     driver.close();
-                } catch (ConnectionFailedException e) {
-                    log.warn(e.getLocalizedMessage());
+                } catch (Exception e) {
+                    log.trace(e.getLocalizedMessage());
                 }
             }
         }
         driver.switchTo().window(mainHandle);
-    }
-
-    private void scrollEachPageAndWait(List<AbstractArticleFinder> buffer, Long time) {
-        Set<String> handles = driver.getWindowHandles();
-
-        for (String handle : handles) {
-            driver.switchTo().window(handle);
-            WebScraperUtils.randomlyScrollDown(driver);
-            WebScraperUtils.waitMs(time);
-        }
     }
 
     private void openSites(List<AbstractArticleFinder> buffer) {

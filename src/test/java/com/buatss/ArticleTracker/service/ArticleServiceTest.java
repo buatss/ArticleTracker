@@ -3,6 +3,7 @@ package com.buatss.ArticleTracker.service;
 import com.buatss.ArticleTracker.db.ArticleRepository;
 import com.buatss.ArticleTracker.model.Article;
 import com.buatss.ArticleTracker.parser.AbstractArticleFinder;
+import com.buatss.ArticleTracker.util.MediaSiteType;
 import com.buatss.ArticleTracker.util.WebScraperUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,11 +79,11 @@ public class ArticleServiceTest {
 
     private static Stream<Arguments> provideManyParsersAndResults() {
         return Stream.of(
-                Arguments.of("1 parsers, 3 max max", 1, 3, 7, 1, 1),
-                Arguments.of("4 parsers, 3 max", 4, 3, 14, 2, 4),
-                Arguments.of("8 parsers, 3 max", 8, 3, 21, 3, 8),
-                Arguments.of("24 parsers, 5 max", 24, 5, 35, 5, 24),
-                Arguments.of("12 parsers, 1 max", 12, 1, 84, 12, 12)
+                Arguments.of("1 parsers, 3 max max", 1, 3, 8, 1, 1),
+                Arguments.of("4 parsers, 3 max", 4, 3, 16, 2, 4),
+                Arguments.of("8 parsers, 3 max", 8, 3, 24, 3, 8),
+                Arguments.of("24 parsers, 5 max", 24, 5, 40, 5, 24),
+                Arguments.of("12 parsers, 1 max", 12, 1, 96, 12, 12)
         );
     }
 
@@ -102,9 +103,11 @@ public class ArticleServiceTest {
         Set<String> handles = Set.of("handle");
         when(mockDriver.getWindowHandles()).thenReturn(handles);
         when(mockDriver.switchTo()).thenReturn(locator);
+        when(mockDriver.getCurrentUrl()).thenReturn("https://www.se.pl/");
         when(locator.window(handles.toArray()[0].toString())).thenReturn(mockDriver);
         doNothing().when(mockParser).findArticles();
         when(mockParser.getArticles()).thenReturn(List.of(article));
+        when(mockParser.getMediaSite()).thenReturn(MediaSiteType.SE.getMediaSite());
 
         try (MockedStatic<WebScraperUtils> ignored = mockStatic(WebScraperUtils.class)
         ) {
@@ -129,16 +132,18 @@ public class ArticleServiceTest {
         Set<String> handles = Set.of("handle");
         when(mockDriver.getWindowHandles()).thenReturn(handles);
         when(mockDriver.switchTo()).thenReturn(locator);
+        when(mockDriver.getCurrentUrl()).thenReturn("https://www.se.pl/");
         when(locator.window(handles.toArray()[0].toString())).thenReturn(mockDriver);
         doNothing().when(mockParser).findArticles();
         when(mockParser.getArticles()).thenReturn(List.of());
+        when(mockParser.getMediaSite()).thenReturn(MediaSiteType.SE.getMediaSite());
 
         try (MockedStatic<WebScraperUtils> ignored = mockStatic(WebScraperUtils.class)
         ) {
             service.scrapAllParallel(3);
         }
 
-        verify(mockDriver, times(7)).getWindowHandles();
+        verify(mockDriver, times(8)).getWindowHandles();
         verify(mockDriver, times(1)).getWindowHandle();
 
         verify(articleRepository, times(0)).findByLink(anyString());
