@@ -45,3 +45,5 @@ build/
 /docker/sonarqube/
 /docker/db/mysql_data/
 
+/ui/node_modules
+/api/node_modules
