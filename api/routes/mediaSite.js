@@ -15,17 +15,17 @@ connection.connect((err) => {
     console.error('Error connection with db: ', err);
     return;
   }
-  console.log('article: Connection with database is successful!');
+  console.log('media_site: Connection with database is successful!');
 });
 
 router.get('/', (req, res) => {
-  const articleId = req.query.id;
-  if (!articleId) {
+  const mediaSiteId = req.query.id;
+  if (!mediaSiteId) {
     res.status(400).send('No "id" parameter in query.');
     return;
   }
 
-  const query = `SELECT * FROM article WHERE id IN (${articleId})`;
+  const query = `SELECT * FROM media_site WHERE id IN (${mediaSiteId})`;
 
   connection.query(query, (err, results) => {
     if (err) {
@@ -35,7 +35,7 @@ router.get('/', (req, res) => {
     }
 
     if (results.length === 0) {
-      res.send('No article with such id');
+      res.send('No media site with such id');
     } else {
       res.json(results);
     }
