@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
 import "../styles/ArticleBrowser.css";
 
-const fetchData = async (limit: number, setItems: Function) => {
+const fetchData = async (
+  page: number,
+  pageSize: number,
+  setItems: Function
+) => {
   try {
     const response = await fetch(
-      `http://localhost:3000/article/latest?limit=${Math.max(1, limit)}`
+      `http://localhost:3000/article/latest?page=${page}&pageSize=${Math.max(
+        1,
+        pageSize
+      )}`
     );
     if (response.ok) {
       const data = await response.json();
@@ -23,15 +30,13 @@ function ArticleList() {
     { id: number; title: string; link: string }[]
   >([]);
   const [limit, setLimit] = useState<number>(10);
+  const [pageSize, setPageSize] = useState<number>(10);
   const [isLinkVisible, setIsLinkVisible] = useState<boolean>(false);
-  const [isPageLoaded, setIsPageLoaded] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
-    if (!isPageLoaded) {
-      fetchData(limit, setItems);
-      setIsPageLoaded(true);
-    }
-  }, [isPageLoaded, limit]);
+    fetchData(currentPage, pageSize, setItems);
+  }, [pageSize, currentPage]);
 
   const handleItemClick = (id: number, link: string) => {
     console.log(`Item clicked with id: ${id} and link:${link}`);
@@ -49,7 +54,13 @@ function ArticleList() {
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await fetchData(limit, setItems);
+    setCurrentPage(1);
+    setPageSize(limit);
+    fetchData(1, limit, setItems);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -66,6 +77,21 @@ function ArticleList() {
         <button onClick={handleToggleLinkVisibility}>
           {isLinkVisible ? "Hide Link" : "Show Link"}
         </button>
+        <div>
+          <button
+            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+          >
+            Previous Page
+          </button>
+          <span>Page {currentPage}</span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={items.length < limit}
+          >
+            Next Page
+          </button>
+        </div>
       </div>
 
       {limit > 0 && items.length === 0 && <h2>Items not found</h2>}
