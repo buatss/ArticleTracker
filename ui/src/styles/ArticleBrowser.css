@@ -27,11 +27,14 @@
     margin-bottom: 3vh;
     display: flex;
   }
-  
-  .ButtonPanel form {
-    margin-right: 0.5vw;
+
+  .ButtonPanel > span {
+    margin-left: 1vw;
   }
-  
+
+  .ButtonPanel button{
+    margin-left: 1vw;
+  }
 
   .ArticleBrowser .ArticleTable {
     color: white;

@@ -49,3 +49,40 @@
     cursor: pointer;
   }
   
+  button {
+    line-height: 40px;
+    font-size: 18px;
+    font-family: sans-serif;
+    text-decoration: none;
+    color: black;
+    border: 2px solid black;
+    letter-spacing: 2px;
+    text-align: center;
+    position: relative;
+    transition: all .35s;
+  }
+  
+  button span {
+    position: relative;
+    z-index: 2;
+  }
+  
+  button:not(:disabled):after{
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: #ff003b;
+    transition: all .35s;
+  }
+  
+  button:hover{
+    color: #fff;
+  }
+  
+  button:hover:after{
+    width: 100%;
+  }
+  

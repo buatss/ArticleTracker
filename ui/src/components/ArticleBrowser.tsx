@@ -72,26 +72,13 @@ function ArticleList() {
             Limit:
             <input type="number" value={limit} onChange={handleLimitChange} />
           </label>
-          <button type="submit">Apply</button>
+          <button type="submit">
+            <span>Apply</span>
+          </button>
         </form>
         <button onClick={handleToggleLinkVisibility}>
-          {isLinkVisible ? "Hide Link" : "Show Link"}
+          <span> {isLinkVisible ? "Hide Link" : "Show Link"}</span>
         </button>
-        <div>
-          <button
-            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
-          >
-            Previous Page
-          </button>
-          <span>Page {currentPage}</span>
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={items.length < limit}
-          >
-            Next Page
-          </button>
-        </div>
       </div>
 
       {limit > 0 && items.length === 0 && <h2>Items not found</h2>}
@@ -113,7 +100,7 @@ function ArticleList() {
                 {isLinkVisible && <td>{item.link}</td>}
                 <td>
                   <button onClick={() => handleItemClick(item.id, item.link)}>
-                    Open Article
+                    <span> Open Article</span>
                   </button>
                 </td>
               </tr>
@@ -121,6 +108,21 @@ function ArticleList() {
           </tbody>
         </table>
       )}
+      <div className="ButtonPanel">
+        <button
+          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+          disabled={currentPage === 1}
+        >
+          <span> Previous Page</span>
+        </button>
+        <span>Page {currentPage}</span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={items.length < limit}
+        >
+          <span>Next Page</span>
+        </button>
+      </div>
     </div>
   );
 }
