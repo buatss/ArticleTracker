@@ -22,6 +22,9 @@ RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckod
     && cp geckodriver /usr/local/bin/ \
     && chmod +x /usr/local/bin/geckodriver
 
+RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+RUN chmod +x wait-for-it.sh
+
 COPY entrypoint.sh /entrypoint.sh
 COPY at.jar /at.jar
 COPY cronScript.sh /cronScript.sh
