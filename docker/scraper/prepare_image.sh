@@ -9,15 +9,15 @@ else
   exit 1
 fi
 
-cd ../../
+cd ../../scraper/
 
 ./mvnw clean package
 
 jar_file=$(find target -name "ArticleTracker*.jar" -print -quit)
 
 if [ -n "$jar_file" ]; then
-  cp "$jar_file" docker/ArticleTracker/at.jar
-  echo "Copied $jar_file to docker/ArticleTracker as at.jar"
+  cp "$jar_file" ../docker/scraper/at.jar
+  echo "Copied $jar_file to docker/scraper as at.jar"
 else
   echo "Error: ArticleTracker.jar not found in target directory!"
   exit 1

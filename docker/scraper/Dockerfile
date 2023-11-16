@@ -1,22 +1,15 @@
-FROM ubuntu:22.04
+FROM ubuntu:22.04 AS builder
 
 # Compatibility https://firefox-source-docs.mozilla.org/testing/geckodriver/Support.html
 
-# update and install dependencies
-RUN apt-get update -y
-RUN apt-get upgrade -y
+RUN apt-get update -y && \
+    apt-get install -y wget openjdk-17-jdk bzip2 libgtk-3-0 libdbus-glib-1-2 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apt-get install -y wget
-RUN apt-get install -y openjdk-17-jdk
+FROM builder AS app
 
-# for decompressing downloads
-RUN apt-get install -y bzip2
-
-# gui tools
-RUN apt-get install -y libgtk-3-0
-
-# allows processes to communicate
-RUN apt-get install -y libdbus-glib-1-2
+WORKDIR /usr/src/app
 
 # donwload & install firefox
 RUN wget https://ftp.mozilla.org/pub/firefox/releases/115.0.2/linux-x86_64/en-US/firefox-115.0.2.tar.bz2 \
@@ -32,8 +25,8 @@ RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckod
 COPY entrypoint.sh /entrypoint.sh
 COPY at.jar /at.jar
 COPY cronScript.sh /cronScript.sh
-RUN chmod +x /entrypoint.sh
-RUN chmod +x /at.jar
-RUN chmod +x /cronScript.sh
+RUN chmod +x /entrypoint.sh /at.jar /cronScript.sh
+
+FROM app AS final
 
 ENTRYPOINT ["/entrypoint.sh"]

@@ -1,10 +1,12 @@
 version: "3.9"
 services:
   at:
+    container_name: at
     build:
-      context: ./ArticleTracker
+      context: scraper
     environment:
       - geckodriver=/usr/local/bin/geckodriver
+      - spring.datasource.url=jdbc:mysql://mysql_db:3306/at_database
     ports:
       - "8080:8080"
     volumes:
