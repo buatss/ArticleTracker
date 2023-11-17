@@ -47,3 +47,6 @@ build/
 
 /ui/node_modules
 /api/node_modules
+!/docker/api/Dockerfile
+!/docker/api/prepare_image.sh
+!/docker/api/entrypoint.sh

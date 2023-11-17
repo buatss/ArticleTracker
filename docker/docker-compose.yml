@@ -33,6 +33,22 @@ services:
     networks:
       - at-network
 
+  at_api:
+    container_name: at_api
+    image: at_api
+    environment:
+      DB_HOST: mysql_db
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_DATABASE: at_database
+    ports:
+      - "3000:3000"
+    networks:
+      - at-network
+    depends_on:
+      - mysql_db
+    command: tail -f /dev/null
+
 networks:
   at-network:
     driver: bridge
