@@ -50,3 +50,4 @@ build/
 !/docker/api/Dockerfile
 !/docker/api/prepare_image.sh
 !/docker/api/entrypoint.sh
+/docker/api/
