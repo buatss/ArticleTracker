@@ -51,6 +51,18 @@ services:
       - mysql_db
     command: tail -f /dev/null
 
+  at_ui:
+    container_name: at_ui
+    build:
+      context: ui
+    image: at_ui
+    ports:
+      - "5173:5173"
+    networks:
+      - at-network
+    depends_on:
+      - at_api
+
 networks:
   at-network:
     driver: bridge
