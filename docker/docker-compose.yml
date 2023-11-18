@@ -35,6 +35,8 @@ services:
 
   at_api:
     container_name: at_api
+    build:
+      context: api
     image: at_api
     environment:
       DB_HOST: mysql_db
