@@ -51,3 +51,7 @@ build/
 !/docker/api/prepare_image.sh
 !/docker/api/entrypoint.sh
 /docker/api/
+/docker/ui/
+!/docker/ui/Dockerfile
+!/docker/ui/prepare_image.sh
+!/docker/ui/entrypoint.sh
