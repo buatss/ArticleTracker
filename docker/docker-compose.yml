@@ -1,10 +1,13 @@
 version: "3.9"
 services:
   at:
+    container_name: at
     build:
-      context: ./ArticleTracker
+      context: scraper
+    image: at
     environment:
       - geckodriver=/usr/local/bin/geckodriver
+      - spring.datasource.url=jdbc:mysql://mysql_db:3306/at_database
     ports:
       - "8080:8080"
     volumes:
@@ -29,6 +32,36 @@ services:
       - ./db/mysql_data:/var/lib/mysql
     networks:
       - at-network
+
+  at_api:
+    container_name: at_api
+    build:
+      context: api
+    image: at_api
+    environment:
+      DB_HOST: mysql_db
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_DATABASE: at_database
+    ports:
+      - "3000:3000"
+    networks:
+      - at-network
+    depends_on:
+      - mysql_db
+    command: tail -f /dev/null
+
+  at_ui:
+    container_name: at_ui
+    build:
+      context: ui
+    image: at_ui
+    ports:
+      - "5173:5173"
+    networks:
+      - at-network
+    depends_on:
+      - at_api
 
 networks:
   at-network:

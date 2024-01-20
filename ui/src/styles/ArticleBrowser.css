@@ -1,0 +1,45 @@
+.ArticleBrowser {
+    background-color: #282c34;
+    padding-left: 5%;
+    padding-right: 5%;
+    text-align: center;
+}
+
+.ArticleBrowser h1 {
+  background-color: #34aae0;
+  min-height: 8vh;
+  max-height: 10vh;
+  align-items: center;
+  padding: 3vh;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3vw;
+  width: 80%;
+  margin: auto;
+}
+
+  .ButtonPanel {
+    justify-content: center;
+    align-items: center;
+    margin-top: 3vh;
+    margin-bottom: 3vh;
+    display: flex;
+  }
+
+  .ButtonPanel > span {
+    margin-left: 1vw;
+  }
+
+  .ButtonPanel button{
+    margin-left: 1vw;
+  }
+
+  .ArticleBrowser .ArticleTable {
+    color: white;
+    align-items: center;
+    margin-right: 5%;
+    margin-left: 5%;
+    width: 90%;
+  }
