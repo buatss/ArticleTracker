@@ -2,7 +2,7 @@
 cd scraper
 ./prepare_image.sh
 cd ..
-docker run -d --name at \
+docker run --rm -d --name at \
     -p 8080:8080 \
     -v ./scraper:/usr/src/app/articles.json \
     -e geckodriver=/usr/local/bin/geckodriver \
