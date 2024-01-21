@@ -1,23 +1,20 @@
 package com.buatss.ArticleTracker.service;
 
-import com.buatss.ArticleTracker.db.ArticleRepository;
-import com.buatss.ArticleTracker.model.Article;
-import com.buatss.ArticleTracker.parser.AbstractArticleFinder;
-import com.buatss.ArticleTracker.parser.CookieAcceptor;
-import com.buatss.ArticleTracker.util.WebScraperUtils;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WindowType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.buatss.ArticleTracker.db.*;
+import com.buatss.ArticleTracker.model.*;
+import com.buatss.ArticleTracker.parser.*;
+import com.buatss.ArticleTracker.util.*;
+import lombok.*;
+import lombok.extern.slf4j.*;
+import org.openqa.selenium.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.*;
 
 import java.util.*;
-import java.util.concurrent.CyclicBarrier;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.stream.*;
 
 
 @Service
@@ -31,6 +28,7 @@ public class ArticleService {
     @Autowired
     private ArticleRepository repository;
     private final CyclicBarrier barrier = new CyclicBarrier(6);
+    private final Boolean runStandalone = Boolean.valueOf(System.getenv("standalone"));
 
     public void scrapAllSequential() {
         parsers
@@ -39,7 +37,7 @@ public class ArticleService {
                 .flatMap(waitAndStreamArticles())
                 .filter(isNotDuplicated())
                 .filter(isLinkNotTooLong())
-                .forEach(saveArticleInDb());
+                .forEach(saveArticle());
         driver.quit();
     }
 
@@ -115,17 +113,24 @@ public class ArticleService {
                 .flatMap(Collection::parallelStream)
                 .filter(isNotDuplicated())
                 .filter(isLinkNotTooLong())
-                .forEach(saveArticleInDb());
+                .forEach(saveArticle());
     }
 
-    private Consumer<Article> saveArticleInDb() {
-        return article -> {
-            try {
+    private Consumer<Article> saveArticle() {
+        if (runStandalone) {
+            return article -> {
+                try {
+                    log.trace("Article = " + article);
+                    ArticleSaver.saveArticleToFile(article);
+                } catch (Exception ignored) {
+                }
+            };
+        } else {
+            return article -> {
                 log.trace("Article = " + article);
                 repository.saveAndFlush(article);
-            } catch (Exception ignored) {
-            }
-        };
+            };
+        }
     }
 
     private static Predicate<Article> isLinkNotTooLong() {

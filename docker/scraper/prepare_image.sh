@@ -23,6 +23,8 @@ else
   exit 1
 fi
 
+cp entrypoint.sh ../docker/scraper/entrypoint.sh
+
 cd "$workdir"
 echo "Clearing previous at image"
 docker image rm at 2>/dev/null || true

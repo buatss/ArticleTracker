@@ -1,10 +1,10 @@
 package com.buatss.ArticleTracker.db;
 
-import com.buatss.ArticleTracker.model.Article;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import com.buatss.ArticleTracker.model.*;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.boot.test.context.*;
+import org.springframework.test.annotation.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 

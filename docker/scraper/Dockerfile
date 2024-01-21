@@ -28,8 +28,8 @@ RUN chmod +x wait-for-it.sh
 COPY entrypoint.sh /entrypoint.sh
 COPY at.jar /at.jar
 COPY cronScript.sh /cronScript.sh
-RUN chmod +x /entrypoint.sh /at.jar /cronScript.sh
 
 FROM app AS final
+RUN chmod +x /entrypoint.sh /at.jar /cronScript.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

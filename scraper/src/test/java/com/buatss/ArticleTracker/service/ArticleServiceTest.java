@@ -40,11 +40,13 @@ public class ArticleServiceTest {
     Article article = new Article(null, "title", "link", null, null);
     Article article2 = new Article(null, "title2", "link2", null, null);
 
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         ReflectionTestUtils.setField(service, "driver", mockDriver);
         ReflectionTestUtils.setField(service, "repository", articleRepository);
+        ReflectionTestUtils.setField(service, "runStandalone", false);
     }
 
     @Test
