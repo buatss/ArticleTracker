@@ -21,6 +21,9 @@ public class ArticleSaver {
                 return;
             }
 
+            long newId = getNextId(existingArticles);
+            article.setId(newId);
+
             objectMapper.writeValue(new File(FILE_PATH), appendArticleToFile(existingArticles, article));
             System.out.println("Article saved successfully to " + FILE_PATH);
         } catch (IOException e) {
@@ -52,5 +55,17 @@ public class ArticleSaver {
         Article[] updatedArticles = Arrays.copyOf(existingArticles, existingArticles.length + 1);
         updatedArticles[existingArticles.length] = newArticle;
         return updatedArticles;
+    }
+
+    private static long getNextId(Article[] existingArticles) {
+        if (existingArticles.length > 0) {
+            long maxId = Arrays.stream(existingArticles)
+                    .mapToLong(Article::getId)
+                    .max()
+                    .orElse(0);
+            return maxId + 1;
+        } else {
+            return 1;
+        }
     }
 }
