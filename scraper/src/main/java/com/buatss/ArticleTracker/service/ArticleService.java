@@ -31,6 +31,7 @@ public class ArticleService {
     private final Boolean runStandalone = Boolean.valueOf(System.getenv("standalone"));
 
     public void scrapAllSequential() {
+        driver.get("");
         parsers
                 .stream()
                 .map(AbstractArticleFinder::getArticles)
